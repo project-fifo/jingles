@@ -168,10 +168,10 @@ angular.module('fifoApp')
                 {id: $scope.hyper.uuid, controller: 'services'},
                 {'action': action, 'service': service},
                 function res(r) {
-                    status.info(action + ' event sent to service ' + service.split('/').pop())
+                    status.info(action + ' action sent to service ' + service.split('/').pop())
                 },
                 function err(r) {
-                    status.error('Could not send event ' + action + ' to service ' + service.split('/').pop())
+                    status.error('Could not send action ' + action + ' to service ' + service.split('/').pop())
                 });
         }
 
