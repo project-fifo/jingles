@@ -116,7 +116,7 @@
             <h4 translate>Disk usage</h4>
             <span>{{cloudStatus.messages[1].percent || '0'}}%</span>
             <gauge ng-model='cloudStatus.messages[1].percent'></gauge>
-            <div>{{cloudStatus.metrics.used || 0 | Mbytes}} of {{cloudStatus.metrics.size || 0 | Mbytes}}</div>
+            <div>{{cloudStatus.metrics['disk-used'] || 0 | Mbytes}} of {{cloudStatus.metrics['disk-size'] || 0 | Mbytes}}</div>
           </div>
         </div>
         <hr/>
