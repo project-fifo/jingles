@@ -68,8 +68,8 @@ Config = {
             element: "disk",
             message: "High Disk usage at: $v%",
             formula: function(m) {
-                if (!m.size) return 0;
-                return m.used / m.size;
+                if (!m['disk-size']) return 0;
+                return m['disk-used'] / m['disk-size'];
             }
         },
         {
