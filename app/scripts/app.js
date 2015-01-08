@@ -250,7 +250,7 @@ angular.module('fifoApp',
 
       $rootScope.cloudStatus.metrics = data.metrics
       $rootScope.cloudStatus.messages = Config.evaluate_cloud(data.metrics).concat(data.warnings)
-      $rootScope.cloudStatus.no_servers = !data.metrics.hypervisors || data.metrics.hypervisors.length < 1
+      $rootScope.cloudStatus.no_servers = data.metrics['total-memory'] == 0
       $rootScope.cloudStatus.cloud_ok = $rootScope.cloudStatus.messages.filter(function(i) {
           /* Msg from the server has no ok attr, so set it. */
           i.ok = !!i.ok;

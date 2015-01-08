@@ -147,8 +147,17 @@ angular.module('fifoApp')
 
       /* Pass the token to autenticate, and a list of vms to monitor */
       if ('WebSocket' in window) {
-        wiggle.vms.list(howl.join)
-        wiggle.hypervisors.list(howl.join)
+
+        wiggle.vms.list(function(vms) {
+          $rootScope.vmsCount = vms.length
+          howl.join(vms)
+        })
+
+        wiggle.hypervisors.list(function(hypers) {
+          $rootScope.hypersCount = hypers.length
+          howl.join(hypers)
+        })
+
         howl.connect($cookies["x-snarl-token"])
       }
 
