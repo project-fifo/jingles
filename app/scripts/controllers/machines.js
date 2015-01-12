@@ -37,7 +37,9 @@ angular.module('fifoApp')
 
       //Save the sorting info in the user metadata
       //wiggle doesnt like to save metadata with a hash inside. serialize it of this time.. :P
-      if (orderByField) auth.currentUser().mdata_set({vms_orderBy: JSON.stringify(p.sorting())})
+      if (orderByField) {
+        auth.currentUser().mdata_set({vms_orderBy: JSON.stringify(p.sorting())})
+      }
 
       $scope.vmsFiltered = data.slice((p.page() - 1) * p.count(), p.page() * p.count());
     }
@@ -173,10 +175,27 @@ angular.module('fifoApp')
       $scope.legend.push({state: k, count: hist[k].count, _state_label: hist[k]._state_label})
   }
 
+  var whenAllDataIsLoaded = function(cb) {
+
+      var all = []
+      $scope.vms.forEach(function(vm) {
+        var proms = [vm._package, vm._owner, vm._grouping, vm._hypervisor]
+          .filter(function(vm){ return vm })
+          .map(function(vm){ return vm.$promise })
+
+        all = all.concat(proms)
+      })
+
+      return $q.all(all)
+  }
+
   var requestsPromise
   $scope.loadVms = function() {
     requestsPromise = startRequests()
     requestsPromise.then(buildLegend)
+
+    //When the vm list is loaded, wait for all tis data to be loaded, and trigger filterData in case user was saerching for i.e. hypervisor name
+    requestsPromise.then(whenAllDataIsLoaded)['finally'](filterData)
   }
 
   $scope.loadVms()
