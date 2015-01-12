@@ -233,13 +233,13 @@ msgstr "DTrace"
 #: app/views/machine.html
 #: app/views/organization.html
 msgid "Dataset"
-msgstr "Dataset"
+msgstr "模板"
 
 #: app/views/role.html
 #: app/views/user.html
 #: app/views/partials/header.html
 msgid "Datasets"
-msgstr "Datasets"
+msgstr "模板列表"
 
 #: app/views/organization.html
 #: app/views/user.html
@@ -332,6 +332,7 @@ msgstr "表单"
 
 #: app/views/server.html
 #: app/views/servers.html
+#: app/views/partials/configs/networking.html
 msgid "Free"
 msgstr "剩余"
 
@@ -639,7 +640,7 @@ msgstr "笔记列表"
 
 #: app/views/dataset.html
 msgid "OS"
-msgstr "OS"
+msgstr "操作系统"
 
 #: app/views/organization.html
 msgid "Org/Role"
@@ -714,7 +715,7 @@ msgstr "请选择一个服务器以配置其拓扑结构"
 
 #: app/views/server.html
 msgid "Pool"
-msgstr "Pool"
+msgstr "池"
 
 #: app/views/about.html
 msgid "Project FiFo"
@@ -984,6 +985,10 @@ msgstr "UUID"
 msgid "Upload a new dataset by selecting a zvol and manifest file"
 msgstr ""
 
+#: app/views/partials/configs/networking.html
+msgid "Used"
+msgstr "已使用"
+
 #: app/views/partials/configs/users_roles.html
 msgid "User"
 msgstr ""
@@ -1093,6 +1098,10 @@ msgstr "已调用"
 #: app/views/user.html
 msgid "delete"
 msgstr "删除"
+
+#: app/views/machines.html
+msgid "here"
+msgstr "此处"
 
 #: app/views/machine-new.html
 msgid "machine"

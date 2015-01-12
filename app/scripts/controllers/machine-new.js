@@ -33,7 +33,7 @@ angular.module('fifoApp').controller('MachineNewCtrl', function ($scope, wiggle,
         networks: {},
         metadata: {},
         alias: $scope.alias,
-        hostname: $scope.hostname,
+        hostname: $scope.hostname.replace(/ /g, '-'),
         ssh_keys: $scope.ssh_keys,
         requirements: $scope.rules,
         autoboot: $scope.autoboot
@@ -298,8 +298,8 @@ angular.module('fifoApp').controller('MachineNewCtrl', function ($scope, wiggle,
     $scope.servers = wiggle.hypervisors.query()
 
     $scope.$watch('alias', function(newVal, oldVal) {
-      if (!$scope.hostname || $scope.hostname == oldVal)
-        $scope.hostname = newVal
+      if (typeof newVal !== 'undefined' && (!$scope.hostname || $scope.hostname == oldVal.replace(/ /g, '-')))
+        $scope.hostname = newVal.replace(/ /g, '-')
     })
 
   }

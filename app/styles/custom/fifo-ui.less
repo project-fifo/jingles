@@ -215,14 +215,25 @@ html, body, .container {
 
 /* Servers topology */
 g.node text {
-	/*font-size: 10px;*/
 	fill: black;
-	font-weight: bold;
-	/*text-transform:capitalize;*/
 }
+
 g.node circle {
-	/*opacity: .8;*/
-	stroke: black;
+	fill: #fff;
+	stroke: steelblue;
+	stroke-width: 1.5px;
+}
+
+g.node circle.server {
+
+	fill: lightsteelblue;
+
+}
+
+g path{
+	fill: none;
+	stroke: #ccc;
+	stroke-width: 1.5px;
 }
 
 text.zone {

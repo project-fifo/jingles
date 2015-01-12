@@ -70,8 +70,8 @@
 
       <!-- Actions: -->
       <td class='hidden-xs'>
-        <i ng-show="vm.state == 'running'" jq-run='tooltip' class='glyphicon glyphicon-sound-dolby clickable' title='Connect' ng-click='connect(vm)' permission=['vms','{{vm.uuid}}','console']></i>
-        <i ng-hide="vm.state.indexOf('stopped') < 0" ng-click="start(this.vm)" jq-run='tooltip' class='glyphicon glyphicon-play clickable' title='Start' permission=['vms','{{vm.uuid}}','state']></i>
+        <i ng-show="vm.state == 'running'" jq-run='tooltip' class='glyphicon glyphicon-sound-dolby clickable' title='Connect' aria-label="Connect" ng-click='connect(vm)' permission=['vms','{{vm.uuid}}','console']></i>
+        <i ng-hide="vm.state.indexOf('stopped') < 0" ng-click="start(this.vm)" jq-run='tooltip' class='glyphicon glyphicon-play clickable' title='Start' aria-label="Start {{vm.name}}" permission=['vms','{{vm.uuid}}','state']></i>
       </td>
     </tr>
   </table>

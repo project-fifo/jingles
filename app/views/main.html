@@ -8,12 +8,11 @@
       </div>
       <div class="panel-body">
         <p>
-          The internal image storage is deprecated! For this release there is no impact on opperations, however over the next couple of releases support for the internal storage will be slowly removed with the following plan (performed step marked in bod):<br/>
+          The internal image storage is deprecated! For this release there is no impact on operations, however over the next couple of releases support for the internal storage will be slowly removed with the following plan (performed step marked in bold):<br/>
           <ul>
             <li>0.6.0 <b>Add deprecation warning</b></li>
             <li>0.6.0 <b>Provide LeoFS all in one dataset</b></li>
-            <li>0.6.1 Provide capability to convert from internal to LeoFS Storage.</li>
-            <li>0.6.1 Disable import of new datasets into interla store.</li>
+            <li>0.6.1 <b>Disable import of new datasets into interla store.</b></li>
             <li>0.6.2 Remove internal daataset store.</li>
           </ul>
         </p>
@@ -116,27 +115,27 @@
             <h4 translate>Disk usage</h4>
             <span>{{cloudStatus.messages[1].percent || '0'}}%</span>
             <gauge ng-model='cloudStatus.messages[1].percent'></gauge>
-            <div>{{cloudStatus.metrics.used || 0 | Mbytes}} of {{cloudStatus.metrics.size || 0 | Mbytes}}</div>
+            <div>{{cloudStatus.metrics['disk-used'] || 0 | Mbytes}} of {{cloudStatus.metrics['disk-size'] || 0 | Mbytes}}</div>
           </div>
         </div>
         <hr/>
         <div class="widget">
           <a href="#/machines" class='nocolor'>
-            <h4>{{cloudStatus.metrics.vms}}</h4>
+            <h4>{{vmsCount}}</h4>
             <div translate>Machines</div>
           </a>
         </div>
 
-        <div class="widget">
+<!--         <div class="widget">
           <a href="#/configuration/users" class='nocolor'>
             <h4>{{cloudStatus.metrics.users}}</h4>
             <div translate>Users</div>
           </a>
-        </div>
+        </div> -->
 
         <div class="widget">
           <a href="#/servers" class='nocolor'>
-            <h4>{{cloudStatus.metrics.hypervisors.length || 0}}</h4>
+            <h4>{{hypersCount}}</h4>
             <div translate>Servers</div>
           </a>
         </div>

@@ -84,4 +84,15 @@
       </tr>
     </table>
   </div>
+  <div class="box">
+    <div ng-repeat="(uuid, res) in org.resources">
+      <h4>{{uuid}}</h4>
+      <table>
+        <tr ng-repeat="r in res | orderBy: 'time'">
+          <td>{{r.time/1000 | date:'medium'}}</td>
+          <td>{{r.action}}</td><tr>
+      </table>
+      <hr/>
+    </div>
+  </div>
 </div>

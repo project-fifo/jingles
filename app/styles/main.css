@@ -7142,7 +7142,7 @@ td.visible-print {
 @media (min-width: 768px) {
   .widget {
     float: left;
-    width: 33.33333333333333%;
+    width: 50%;
   }
 }
 
@@ -8352,14 +8352,23 @@ body,
 /* Servers topology */
 
 g.node text {
-  font-weight: bold;
   fill: black;
 }
 
 g.node circle {
-  /*opacity: .8;*/
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
 
-  stroke: black;
+g.node circle.server {
+  fill: lightsteelblue;
+}
+
+g path {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
 }
 
 text.zone {

@@ -15,7 +15,7 @@
                 ng-disabled="vm.mdata('locked') ||
                              !(vm.state!='running'&&vm.state!='booting'&&vm.state!='shutting_down')"
                 class="btn btn-default" bs-modal="'views/partials/modal-confirm.html'"
-                title='Delete' jq-run='tooltip' jq-options="{placement: 'bottom', container: 'body'}"
+                title='Delete' aria-label="Delete" jq-run='tooltip' jq-options="{placement: 'bottom', container: 'body'}"
                 permission=['vms','{{vm.uuid}}','delete']>
           <i class="glyphicon glyphicon-trash"></i>
         </button>
@@ -24,29 +24,29 @@
            ng-click="confirm_freeze(vm)"
            ng-disabled="prevent_freeze()"
            class="btn btn-default" bs-modal="'views/partials/modal-confirm.html'"
-           title="Freeze" jq-run="tooltip" jq-options="{placement: 'bottom', container: 'body'}"
+           title="Freeze" aria-label="Freeze" jq-run="tooltip" jq-options="{placement: 'bottom', container: 'body'}"
            permission=['vms','{{vm.uuid}}','delete']>
           <i class="glyphicon glyphicon-cloud-upload"></i>
         </button>
         <button ng-click="console(vm)"
                 ng-enabled="vm.state=='running' && vm.config"
-                title="Console"
+                title="Console" aria-label="Console"
                 jq-run="tooltip"
                 jq-options="{placement: 'bottom', container: 'body'}"
                 class="btn btn-default"
                 permission="['vms','{{vm.uuid}}','console']">
-          <i class='glyphicon glyphicon-sound-dolby'></i>
+          <i aria-hidden="true" class='glyphicon glyphicon-sound-dolby'></i>
         </button>
         <button ng-click="lock()"
                 ng-class="vm.mdata('locked') && 'btn btn-info' || 'btn btn-default'"
-                title='Lock vm to prevent changes' jq-run='tooltip' jq-options="{placement: 'bottom', container: 'body'}">
+                title='Lock vm to prevent changes' aria-label="Lock" jq-run='tooltip' jq-options="{placement: 'bottom', container: 'body'}">
           <i class='glyphicon glyphicon-lock'></i>
         </button>
       </div>
       <div class="btn-group btn-group-sm" style=''>
         <button ng-click="action('start', vm)"
                 ng-disabled="vm.state.indexOf('stopped')<0 || vm.mdata('locked')"
-                title='Start'
+                title='Start' aria-label="Start"
                 jq-run='tooltip'
                 jq-options="{placement: 'bottom', container: 'body'}"
                 class="btn btn-default"
@@ -55,7 +55,7 @@
         </button>
         <button ng-click="action('reboot', vm)"
                 ng-disabled="vm.state!='running' || vm.mdata('locked')"
-                title='Reboot'
+                title='Reboot' aria-label="Reboot"
                 jq-run='tooltip'
                 jq-options="{placement: 'bottom', container: 'body'}"
                 class="btn btn-default"
@@ -64,7 +64,7 @@
         </button>
         <button ng-click="action('stop', vm)"
                 ng-disabled="vm.state!='running' || vm.mdata('locked')"
-                title="{{force && 'Force ' || ''}}Stop"
+                title="{{force && 'Force ' || ''}}Stop" aria-label="{{force && 'Force ' || ''}}Stop"
                 jq-run='tooltip'
                 jq-options="{placement: 'bottom', container: 'body'}"
                 class="btn {{force && 'btn-warning' || 'btn-default'}}"
@@ -203,7 +203,7 @@
                 <span ng-show='vm.config._dataset' class="badge badge-info">
                   {{vm.config._dataset.name || 'unknow'}} {{vm.config._dataset.version}}
                 </span>
-                <img jq-run='tooltip' title="{{vm.config._dataset.os || 'unknown'}}"
+                <img jq-run='tooltip' title="{{vm.config._dataset.os || 'unknown'}}" alt="{{vm._config.dataset.os || 'Unknown'}} logo"
                      ng-src="images/logos/{{vm.config._dataset.os || 'unknown'}}.png" class='oslogo'/>
               </div>
 

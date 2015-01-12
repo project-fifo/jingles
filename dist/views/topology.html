@@ -1,7 +1,7 @@
 
-<div id='svg-container' class='col-md-6' topology servers='servers' selected='selected'></div>
+<div id='svg-container' class='col-md-7' topology servers='servers' selected='selected'></div>
 
-<div class='col-md-6'>
+<div class='col-md-5'>
 
 <div translate class='well' ng-hide='selected'>Please select a server to setup its topology</div>
 
@@ -32,7 +32,7 @@
 </div>
 </div>
 
-<div class='col-md-12'>
+<div class='col-md-5'>
 <div class="panel panel-info" ng-if='selected'>
 	<div class="panel-heading">
 		<span translate>Path of server</span> {{selected.alias}}
@@ -49,8 +49,8 @@
 			</tr>
 
 			<tr ng-repeat='path in paths'>
-				<td><input class='form-control' ng-model='path.name' /></td>
-				<td><input class='form-control' ng-model='path.cost' type='number' /></td>
+				<td><input class='form-control' ng-model='path.name' ng-disabled='!($index<paths.length - 1)' /></td>
+				<td><input class='form-control' ng-model='path.cost' type='number' ng-disabled='!($index<paths.length - 1)' /></td>
 				<td><i class='glyphicon glyphicon-remove clickable' style='padding: 7px;' ng-click="paths.splice($index,1)" ng-if='$index<paths.length - 1'></i></td>
 			</tr>
 

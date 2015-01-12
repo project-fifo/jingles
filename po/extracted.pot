@@ -157,6 +157,10 @@ msgstr ""
 msgid "Cluster"
 msgstr ""
 
+#: app/views/machine-new.html
+msgid "Clusters"
+msgstr ""
+
 #: app/views/groupings.html
 msgid "Clusters and VMs"
 msgstr ""
@@ -242,6 +246,10 @@ msgstr ""
 msgid "Delete a Snapshot"
 msgstr ""
 
+#: app/views/main.html
+msgid "Deprecation warning!"
+msgstr ""
+
 #: app/views/machine.html
 msgid "Describe"
 msgstr ""
@@ -310,10 +318,6 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: app/views/partials/configs/networking.html
-msgid "First"
-msgstr ""
-
 #: app/views/machine.html
 msgid "Force"
 msgstr ""
@@ -324,6 +328,7 @@ msgstr ""
 
 #: app/views/server.html
 #: app/views/servers.html
+#: app/views/partials/configs/networking.html
 msgid "Free"
 msgstr ""
 
@@ -440,10 +445,6 @@ msgstr ""
 msgid "L2 Size"
 msgstr ""
 
-#: app/views/partials/configs/networking.html
-msgid "Last"
-msgstr ""
-
 #: app/views/machine.html
 msgid "List Color"
 msgstr ""
@@ -548,10 +549,6 @@ msgstr ""
 msgid "Network tags"
 msgstr ""
 
-#: app/views/machine.html
-msgid "Networking"
-msgstr ""
-
 #: app/views/role.html
 #: app/views/server.html
 #: app/views/servers.html
@@ -606,10 +603,6 @@ msgstr ""
 
 #: app/views/partials/configs/users_roles.html
 msgid "New User"
-msgstr ""
-
-#: app/views/partials/configs/networking.html
-msgid "Next"
 msgstr ""
 
 #: app/views/groupings.html
@@ -764,10 +757,6 @@ msgstr ""
 
 #: app/views/package-new.html
 msgid "Resources"
-msgstr ""
-
-#: app/views/partials/configs/networking.html
-msgid "Returned"
 msgstr ""
 
 #: app/views/organization.html
@@ -938,6 +927,10 @@ msgstr ""
 msgid "There are no additonal rules"
 msgstr ""
 
+#: app/views/machines.html
+msgid "There is a change in the machines count. Click"
+msgstr ""
+
 #: app/views/main.html
 msgid "Tip: You can <a href=\"https://project-fifo.net/display/PF/LeoFS\">configure</a> Fifo to backup machine's into an S3 compatible service. Then, you will see a 'Versioning' tab on each machine page that lets you work with the backups."
 msgstr ""
@@ -974,6 +967,10 @@ msgstr ""
 
 #: app/views/datasets.html
 msgid "Upload a new dataset by selecting a zvol and manifest file"
+msgstr ""
+
+#: app/views/partials/configs/networking.html
+msgid "Used"
 msgstr ""
 
 #: app/views/partials/configs/users_roles.html
@@ -1086,10 +1083,18 @@ msgstr ""
 msgid "delete"
 msgstr ""
 
+#: app/views/machines.html
+msgid "here"
+msgstr ""
+
 #: app/views/machine-new.html
 msgid "machine"
 msgstr ""
 
 #: app/views/machines.html
 msgid "of"
+msgstr ""
+
+#: app/views/machines.html
+msgid "to update this page"
 msgstr ""

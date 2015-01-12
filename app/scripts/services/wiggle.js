@@ -130,6 +130,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
     }
 
     //Initialize the caches.
+    $cacheFactory('org')
     $cacheFactory('datasets')
     $cacheFactory('networks')
     $cacheFactory('hypervisors')
@@ -229,7 +230,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                    controller_id2: '@controller_id2',
                                    controller_id3: '@controller_id3'},
                                   {put: {method: 'PUT', headers: withToken()},
-                                   get: {method: 'GET', cache: true, headers: withToken()},
+                                   get: {method: 'GET', cache: $cacheFactory.get('org'), headers: withToken()},
                                    grant: {method: 'PUT', headers: withToken()},
                                    revoke: {method: 'DELETE', headers: withToken()},
                                    create: {method: 'POST', headers: withToken()},

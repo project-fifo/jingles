@@ -21,7 +21,11 @@
         </thead>
         <tbody>
           <tr ng-repeat="hyper in hypervisors">
-            <td class='nowrap'><a href="#/servers/{{hyper.uuid}}">{{hyper.alias || hyper.uuid}}</a> <i ng-show='hyper.metadata.jingles.notes.length' class='glyphicon glyphicon-envelope' title='Note' jq-run='tooltip'></i></td>
+            <td class='nowrap'><a href="#/servers/{{hyper.uuid}}">{{hyper.alias || hyper.uuid}}</a>
+              <i ng-show='hyper.metadata.jingles.notes.length' class='glyphicon glyphicon-envelope' title='Note' jq-run='tooltip'></i>
+              <i ng-if="problems[hyper.uuid]" class="glyphicon glyphicon-exclamation-sign" title='{{problems[hyper.uuid]}}' jq-run='tooltip' style='color: red;'></i>
+              <i ng-if="!problems[hyper.uuid]" class="glyphicon glyphicon-ok" title='Chunter agent connected' jq-run='tooltip' style='color: green;'></i>
+            </td>
             <td class='nowrap'>{{hyper.host}}</td>
             <td class='mono nowrap'><span jq-run='tooltip' title="{{hyper.sysinfo['Boot Time'] *1000 | date:'medium'}}" am-time-ago="hyper.sysinfo['Boot Time'] *1000"></span></td>
             <td class='nowrap'><small>{{hyper['version'].split(',')[0]}}</small></td>

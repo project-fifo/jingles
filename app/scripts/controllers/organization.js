@@ -19,7 +19,7 @@ function init_scope($scope, org) {
 };
 
 angular.module('fifoApp')
-  .controller('OrganizationCtrl', function ($scope, $routeParams, $location, wiggle, vmService, status, breadcrumbs) {
+  .controller('OrganizationCtrl', function ($scope, $routeParams, $location, wiggle, vmService, status, breadcrumbs, $cacheFactory) {
 
     $scope.role = "";
     $scope.permission = "";
@@ -123,6 +123,11 @@ angular.module('fifoApp')
             controller_id: trigger.uuid
         }, {
         }, function success(res) {
+
+            //Lets clean the cache before asking for the org...
+            var c = $cacheFactory.get('org')
+            c.removeAll()
+
             wiggle.orgs.get({id: uuid}, function(res) {
                 init_scope($scope, res)
             });

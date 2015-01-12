@@ -4,7 +4,7 @@ Config = {
      * for VM's the dashboard is called 'vm' for hypervisors it's called 'hypervisor'
      * the parameters are passed as 'VM' and 'Hypervisor' which can be used in filters.
      */
-    // grafana: "http://172.21.0.221:8082/#/dashboard/elasticsearch",
+    // grafana: "http://127.0.0.1:8082/#/dashboard/elasticsearch",
     /*
      * Comment this line in production!
      * dev mode will cause the UI to log in with the
@@ -68,8 +68,8 @@ Config = {
             element: "disk",
             message: "High Disk usage at: $v%",
             formula: function(m) {
-                if (!m.size) return 0;
-                return m.used / m.size;
+                if (!m['disk-size']) return 0;
+                return m['disk-used'] / m['disk-size'];
             }
         },
         {

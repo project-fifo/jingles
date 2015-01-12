@@ -5,7 +5,7 @@
       <span class="badge badge-info">
         {{dataset.name}} {{dataset.version}}
       </span>
-      <img jq-run='tooltip' title="{{dataset.os || 'unknown'}}"
+      <img jq-run='tooltip' title="{{dataset.os || 'unknown'}}" alt="{{dataset.os || 'unknown'}} logo"
            ng-src="images/logos/{{dataset.os || 'unknown'}}.png" class='oslogo'/>
       <a class="btn btn-sm btn-default" href="/api/0.1.0/datasets/{{dataset.uuid}}/dataset.gz">
         <i class="glyphicon glyphicon-download-alt"></i>

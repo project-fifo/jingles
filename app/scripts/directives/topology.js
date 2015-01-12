@@ -1,270 +1,330 @@
-'use strict';
+'use strict'
 
 angular.module('fifoApp')
-	.directive('topology', function() {
-		return {
-			// templateUrl: '/views/partials/topology.html',
-			restrict: 'AE',
-			controller: function topologyController($scope) {
+    .directive('topology', function () {
+        return {
+            // templateUrl: '/views/partials/topology.html',
+            restrict: 'AE',
+            controller: function topologyController($scope) {
 
-				$scope.buildDataTree = function(servers) {
+                $scope.buildDataTree = function (servers) {
 
-					//1.- Build the nodes object
-					var nodes = [],
-						nodesById = []
+                    //1.- Build the nodes object
+                    var nodes = [],
+                        nodesById = []
 
-					servers.forEach(function(server) {
+                    if (!servers) return null
 
-						server.path.forEach(function(path) {
+                    servers.forEach(function (server) {
 
-							var node;
+                        if (server.path.length == 0) server.path[0] = {
+                            "cost": 1,
+                            "name": server.uuid
+                        }
 
-							//Its the server
-							if (path.name == server.uuid) {
-								node = server
-								node.cost = path.cost
-								// node.name = path.name        
-								node.isServer = true
-							} else {
-								node = path
-								node.uuid = path.name + path.cost //For the case when same path.name from different hypers have different costs.
-								node.isServer = false
-							}
+                        server.path.forEach(function (path) {
 
-							if (nodesById.indexOf(node.uuid) < 0) {
-								nodes.push(node)
-								nodesById.push(node.uuid)
-							}
+                            var node
 
-						})
-					})
-					// console.log('nodes:', nodes)
+                            //Its the server
+                            if (path.name == server.uuid) {
+                                node = server
+                                node.cost = path.cost
+                                // node.name = path.name        
+                                node.isServer = true
+                            } else {
+                                node = path
+                                node.uuid = path.name + path.cost //For the case when same path.name from different hypers have different costs.
+                                node.isServer = false
+                            }
 
-					//2.- Get the links between them
-					var connections = [],
-						connectionsById = {}
+                            if (nodesById.indexOf(node.uuid) < 0) {
+                                nodes.push(node)
+                                nodesById.push(node.uuid)
+                            }
 
-					servers.forEach(function(server) {
-						var lastPath = null;
-						server.path.forEach(function(path) {
+                        })
+                    })
+					
+					if (!nodes.length) return //if there are no nodes, exit
 
-							if (lastPath !== null) {
-								//dont repeate link.
-								// var connectionId = lastPath.name + lastPath.cost + path.name + path.cost
-								var connectionId = lastPath.name + path.name
-								if (!connectionsById[connectionId]) {
-									connections.push({
-										target: path.isServer === false ? path.name + path.cost : path.name,
-										source: lastPath.isServer === false ? lastPath.name + lastPath.cost : lastPath.name
-									})
-									connectionsById[connectionId] = true
-								}
-							}
+                    //2.- Get the links between them
+                    var connections = [],
+                        connectionsById = {}
 
-							lastPath = path
+                    servers.forEach(function (server) {
+                        var lastPath = null
+                        server.path.forEach(function (path) {
 
-						})
-					})
-					// console.log('connections:', connections)
+                            if (lastPath !== null) {
+                                //dont repeate link.
+                                // var connectionId = lastPath.name + lastPath.cost + path.name + path.cost
+                                var connectionId = lastPath.name + path.name
+                                if (!connectionsById[connectionId]) {
+                                    connections.push({
+                                        target: path.isServer === false ? path.name + path.cost : path.name,
+                                        source: lastPath.isServer === false ? lastPath.name + lastPath.cost : lastPath.name
+                                    })
+                                    connectionsById[connectionId] = true
+                                }
+                            }
 
-					//3.- Transform the connection in 'links' (nodes index)
-					var links = connections.map(function(con) {
-							return {
-								source: nodesById.indexOf(con.source),
-								target: nodesById.indexOf(con.target)
-							}
-						})
-						// console.log('links:', links)
+                            lastPath = path
 
-					return {
-						nodes: nodes,
-						links: links
-					}
+                        })
+                    })
 
-				}
+                    //3.- Transform the connection in 'links' (nodes index)
+                    var links = connections.map(function (con) {
+                        return {
+                            source: nodesById.indexOf(con.source),
+                            target: nodesById.indexOf(con.target)
+                        }
+                    })
 
-				$scope.paintNodes = function(data) {
+                    //4.- Copy into new list
 
-					//Lazy enough: just wipe all the links and build them again, side effect: lines will be on top of the circles.. :S
-					$scope.svg.selectAll('line').remove()
 
-					var links = $scope.svg.selectAll('line')
-						.data(data.links)
+                    var fifo = {
+                        uuid: "0",
+                        alias: "FiFo",
+                        children: []
+                    }
 
-					var newLink = links.enter()
-						.append('line')
-						.attr("r", 1)
-						.style("stroke", function(d) {
-							return '#ccc'
-						})
+                    var drawableNodes = []
 
-					var nodes = $scope.svg.selectAll('g')
-						.data(data.nodes, function(d) { return d.uuid })
+                    for (var index = 0; index < nodes.length; ++index) {
+                        var drawableNode = {
+                            uuid: nodes[index].uuid,
+                            alias: nodes[index].alias,
+                            name: nodes[index].name,
+                            nodeRef: nodes[index],
+                            isServer: nodes[index].isServer
+                        }
+                        drawableNodes[index] = drawableNode
+                    }
 
-					var newNode = nodes.enter()
-						.append('g')
-						.attr('class', function(d) { return d.isServer ? 'node clickable' : 'node' })
-						.attr('transform', function(d) { return "translate(" + d.x + "," + d.y + ")" })
-						.call($scope.force.drag)
 
-					newNode.append('circle')
-						.attr('r', function(d) { return d.isServer ? 9 : 6 })
-						.attr('fill', function(d) { return d.isServer ? 'blue' : 'orange' })
-						.call($scope.force.drag)
+                    links.forEach(function (d) {
+                        drawableNodes[d.target].parent = drawableNodes[d.source].uuid
+                    })
 
-					newNode.append('text')
-						.attr({
-							class: 'text',
-							dy: function(d) { return d.isServer? 20: -10},
-							'text-anchor': 'middle',
-							'font-size': function(d) { return d.isServer ? 12 : 10 }
-						})
+                    for (var index = 0; index < drawableNodes.length; ++index) {
+                    	if (!drawableNodes[index].parent) drawableNodes[index].parent = "__root"
 
-					//update the text's
-					$scope.svg.selectAll('text')
-						.data(data.nodes, function(d) {return d.uuid})
-						.text(function(d) {
-							if (d.isServer) return d.alias
-							var txt = d.name
-							if (typeof(d.cost)=='number') txt += ' (' + d.cost + ')'
-							return txt
-						})
+                    }
 
-					nodes.exit()
-						.remove()
+                    var drawableNodeById = []
+                    drawableNodes.forEach(function (d) {
+                        drawableNodeById[d.uuid] = d
+                    })
 
-					nodes.on('click', $scope.onNodeClick)
+                    var drawableNodeByParent = []
+                    drawableNodes.forEach(function (d) {
+                    	if (drawableNodeByParent[d.parent])
+                        	drawableNodeByParent[d.parent].linkedChildren.push(d)
+                    	else
+                    		drawableNodeByParent[d.parent] = {linkedChildren: [d]}
+                    })
 
-					$scope.force
-						.nodes(data.nodes)
-						.links(data.links)
-						.on('tick', function tick(e) {
-							// Push sources up and targets down to form a weak tree.
-							var k = 6 * e.alpha
-							data.links.forEach(function(d, i) {
-								d.source.y -= k
-								d.target.y += k
-							});
+                    drawableNodeByParent["__root"].linkedChildren.forEach(function(d){
 
-							nodes.attr('transform', function(d) {
-								return "translate(" + d.x + "," + d.y + ")"
-							})
+                    	 function formTree(r) {
+                    	 		if(drawableNodeByParent[r.uuid] ){  //if the current r is a parent
+                    	 			drawableNodeByParent[r.uuid].linkedChildren.forEach(formTree) //call form tree for each linkedchildren
+                    	 		} 
 
-							links.attr("x1", function(d) { return d.source.x; })
-								.attr("y1", function(d) { return d.source.y; })
-								.attr("x2", function(d) { return d.target.x; })
-								.attr("y2", function(d) { return d.target.y; })
-						})
-						.start()
+                    	 		if (r.parent == "__root"){ //if parent is fifo escape
+									fifo.children.push(r)
+									return
+                    	 		} 
 
-				},
+                    	 		if(drawableNodeById[r.parent].children) // add current node to children of parent
+                    	 			drawableNodeById[r.parent].children.push(r)
+                    	 		else
+                    	 			drawableNodeById[r.parent].children = [r]
 
-				$scope.onNodeClick = function(node) {
-					if (!node.isServer) return;
 
-					var nodes = $scope.svg.selectAll('g')
-						.data($scope.treeData.nodes, function(d) { return d.uuid })
+						  }
+						  formTree(d)
+                    }) 
 
-					//Unselect all nodes
-					nodes.attr('stroke-width', '1px')
-					//The clicked node
-					var el = d3.select(this)
-						.transition()
-						.attr('stroke-width', '3px')
+                    return fifo
 
-					//Mark the nodes that are part of the path of the server
-					var nodesById = node.path.map(function(path) {
-						return path.uuid
-					}).filter(function(d) {
-						return d
-					})
-					var pathNodes = $scope.treeData.nodes.map(function(node) {
-						if (nodesById.indexOf(node.uuid) > -1)
-							return node
-					}).filter(function(d) {
-						return d
-					})
+                }
 
-					//Reset the color of all nodes
-					$scope.svg.selectAll('circle')
-						.attr('fill', function(d) {
-							return d.isServer ? 'blue' : 'orange'
-						})
+                $scope.paintNodes = function (data) {
 
-					//Color the node in the path of the hypervisor
-					$scope.svg.selectAll('circle')
-						.data(pathNodes, function(d) {
-							return d.uuid
-						})
-						.transition()
-						.attr('fill', 'yellow')
 
-					$scope.$apply(function() {
-						$scope.selected = node
-					})
-				}
+                    // Sooo lazy... 
+                    $scope.svg.selectAll(".link").remove()
+                    $scope.svg.selectAll(".node").remove()
 
-				//Dummy data
-				$scope.buildDataTreeNoop = function dummy() {
 
-					return {
-						"nodes": [
-							{uuid: '1', "name": "cero", cost: 0},
-							{uuid: '2', "name": "uno", cost: 1},
-							{uuid: '3', "name": "dos", cost: 2},
-							{uuid: '4', "name": "tres", cost: 3},
-							{uuid: '5', "name": "cuatro", cost: 0},
-							{uuid: '6', "alias": "cinco", cost: 0, isServer: true},
-							{uuid: '7', "alias": "seis", cost: 0, isServer: true},
-							{uuid: '8', "alias": "siete", cost: 0, isServer: true},
-							{uuid: '9', "alias": "ocho", cost: 0, isServer: true},
-						],
-						"links": [
-							{"source": 0, "target": 1},
-							{"source": 0, "target": 2},
-							{"source": 0, "target": 3},
-							{"source": 1, "target": 4},
-							{"source": 4, "target": 5},
-							{"source": 2, "target": 6},
-							{"source": 3, "target": 7},
-							{"source": 3, "target": 8},
-						]
-						}
-				}
+                    var nodes = $scope.cluster.nodes(data),
+                        links = $scope.cluster.links(nodes)
 
-			},
+                    $scope.svg.selectAll(".link")
+                        .data(links)
+                        .enter().append("path")
+                        .attr("class", "link")
+                        .attr("d", $scope.diagonal)
 
-			scope: {
-				servers: '=',
-				selected: '='
-			},
+                    var node = $scope.svg.selectAll(".node")
+                        .data(nodes)
+                        .enter().append("g")
+                        .attr("class", function (d) {
+                            return d.isServer ? "node clickable" : "node clickable link"
+                        })
+                        .attr("transform", function (d) {
+                            return "translate(" + d.y + "," + d.x + ")"
+                        })
 
-			link: function postLink(scope, element, attrs) {
+                    node.append("circle")
+                        .attr("r", function(d) { return d.isServer ? 6.5 : 4.5 })
+                        .attr("class", function (d) {
+                            return d.isServer ? "server" : "link"
+                        })
 
-				scope.svg = d3.select('#' + attrs.id).append('svg').attr('height', 250)
+                    node.append("text")
+                        .attr("dx", function (d) {
+                            return d.children ? 0 : 8
+                        })
+                        .attr("dy", function (d) {
+                            return d.children ? 20 : 0
+                        }) 
+                        .style("text-anchor", function (d) {
+                            return d.isServer ? "start" : "middle"
+                        })
+                        .text(function (d) {
+                            return d.alias ? d.alias : d.name
+                        })
 
-				scope.force = d3.layout.force()
-				// .size([window.innerWidth||500,300])
-					.size([500, 300])
-					.charge(-170)
-					.linkDistance(40)
+                    node.on('click', $scope.onNodeClick)
 
-				//First time wait for the servers data.
-				scope.servers.$promise.then(function(servers) {
-					scope.treeData = scope.buildDataTree(servers)
-				})
+                },
 
-				//Update when the user changes the path of the hyper
-				scope.$watch('selected', function(val) {
-					scope.treeData = scope.buildDataTree(scope.servers)
-				}, true)
+                $scope.onNodeClick = function (node) {
 
-				//When treeData changes, paint the nodes.
-				scope.$watch('treeData', function(val) {
-					if (!val) return;
-					scope.paintNodes(val)
-				})
+                    $scope.centerNode(node)
 
-			}
-		};
-	});
+                    if (node.nodeRef && node.nodeRef.isServer) {
+                        $scope.$apply(function () {
+                            $scope.selected = node.nodeRef
+                        })
+                    } else {
+                        $scope.$apply(function () {
+                            $scope.selected = null
+                        })
+                    }
+          
+                },
+
+                $scope.centerNode = function centerNode(source) {
+
+                    var x, y, scale
+
+                    y = -source.x
+                    x = -source.y
+                    scale = 1.1 //$scope.zoomListener.scale()
+
+                    // Because the layout is horizontal X and Y axis are switched	
+                    x = -source.x * scale + $scope.viewerHeight / 2
+                    y = -source.y * scale + $scope.viewerWidth / 2
+
+                    $scope.moveCanvas({duration: 750, scale: 1.1, position: [y,x]})
+
+                },
+
+                $scope.moveCanvas = function(opts) {
+
+                    var scale = opts.scale || 1,
+                        position = opts.position || [100, 100],
+                        duration = opts.duration || 0
+
+
+                    d3.select("g").transition()
+                        .duration(duration)
+                        .attr("transform", "translate(" + position[0] + "," + position[1] + ")scale(" + scale + ")")
+
+                    $scope.zoomListener.scale(scale)
+                    $scope.zoomListener.translate(position)
+                }
+
+            },
+
+            scope: {
+                servers: '=',
+                selected: '='
+            },
+
+
+            link: function postLink(scope, element, attrs) {
+
+                scope.viewerWidth = 500
+                scope.viewerHeight = 500
+
+                var margin = 100
+
+                // Because the layout is horizontal X and Y axis are switched
+                scope.cluster = d3.layout.cluster()
+                    .size([scope.viewerHeight, scope.viewerWidth])
+                    .separation(function (a, b) {
+                        return (a.parent == b.parent ? 1 : 2) / a.depth
+                    })
+
+                scope.diagonal = d3.svg.diagonal().projection(function (d) {
+                    return [d.y, d.x]
+                })
+
+                scope.zoomListener = d3.behavior.zoom().scaleExtent([.5, 2]).on("zoom", function () {
+
+                    var t = [],
+                        s = d3.event.scale,
+                        ty = d3.event.translate[0],
+                        tx = d3.event.translate[1]
+
+                    //Dont allow the graph to pan more than 85% off the display area
+                    t[0] = Math.min(scope.viewerWidth * .85 * s, Math.max(scope.viewerWidth * -.85 * s, ty))
+                    t[1] = Math.min(scope.viewerHeight * .85 * s, Math.max(scope.viewerHeight * -.85 * s, tx))
+
+                    scope.moveCanvas({scale: d3.event.scale, position: t})
+                })
+
+                //Set image props
+                scope.svg = d3.select('#' + attrs.id).append("svg")
+                    .attr("width", scope.viewerWidth + margin * 2)
+                    .attr("height", scope.viewerHeight + margin * 2)
+                    .call(scope.zoomListener)
+                    .attr("class", "drawarea")
+                    .append("svg:g")
+                d3.select(".drawarea").call(scope.zoomListener)
+
+
+                //Wire it up
+
+                //First time wait for the servers data.
+                scope.servers.$promise.then(function (servers) {
+                    scope.treeData = scope.buildDataTree(servers)
+                })
+
+                //Update when the user changes the path of the hyper
+                scope.$watch('selected', function (val) {
+                    scope.treeData = scope.buildDataTree(scope.servers)
+                }, true)
+
+
+                //When treeData changes, paint the nodes.
+                scope.$watch('treeData', function (val) {
+                    if (!val) return
+                    scope.paintNodes(val)
+                })
+
+
+                //Give the graph some breathing room
+                d3.select("g").attr("transform", "translate(" + margin + "," + margin + ")")
+                scope.zoomListener.translate([margin, margin])
+
+            }
+        }
+    })

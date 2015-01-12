@@ -41,7 +41,7 @@ angular.module('fifoApp')
         scope.$watch('ngModel', function(model, old) {
             if (!model || model == old) return;
 
-            scope.services = {a: 123}
+            scope.services = {}
             scope.mk_services(model);
 
             //What channel to listen to.

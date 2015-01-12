@@ -11,10 +11,10 @@
     <td ng-show='show_actions'>
       <i ng-show="service.state == 'disabled'" 
         ng-click="action({action: 'enable', service: service.service})"
-        jq-run="tooltip" class="glyphicon glyphicon-play clickable" title="Start"></i>
+        jq-run="tooltip" class="glyphicon glyphicon-play clickable" title="Enable"></i>
       <i ng-show="service.state == 'online'" 
         ng-click="action({action: 'disable', service: service.service})"
-        jq-run="tooltip" class="glyphicon glyphicon-stop clickable" title="Stop"></i>
+        jq-run="tooltip" class="glyphicon glyphicon-stop clickable" title="Disable"></i>
       <i ng-show="service.state == 'degraded' || service.state == 'maintainance'" 
         ng-click="action({action: 'clear', service: service.service})"
         jq-run="tooltip" class="glyphicon glyphicon-repeat clickable" title="Clear"></i>

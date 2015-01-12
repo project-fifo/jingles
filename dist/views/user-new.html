@@ -1,22 +1,23 @@
-<div class="row">
-  <div class="col-md-12">
-    <div class="alert alert-info">
-      <span>Create a new user called</span>: 
-      <input class='input-large' style='margin-left: 8px;' type=text ng-model='name' autofocus>.
-    </div>
+<div class="col-md-12">
+  <div class="alert alert-info">
+    <span>Create a new user called</span>: 
+    <input class='input-large' style='margin-left: 8px;' type=text ng-model='name' autofocus>
   </div>
 
   <div class="col-md-5 thumbnail">
-    <div class="form-horizontal1">
-      <div class="control-pass">
-        <label class="control-plabel" for="user-pass2"> &nbsp; New Password</label>
-        <input class="valid input-medium" style='margin-left: 8px;' id="user-pass1" type="password" ng-model='pass1' ng:validate="integer"/></input>
-      </div>
-      <div class="control-pass">
-        <label class="control-plabel" for="user-pass1"> &nbsp; Confirm New Password</label>
-        <input class="valid input-medium" style='margin-left: 8px;' id="user-pass2" type="password" ng-model='pass2' ng:validate="integer"></input>
-        <button class='btn btn-success pull-right' ng-disabled='!(name && pass1 && (pass1 == pass2))' ng-click='create_user()' translate>Create</button>
-      </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+      <input ng-model="pass1" class="form-control ng-pristine ng-valid" type="password" placeholder="New password"><br>
     </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+      <input ng-model="pass2" class="form-control ng-pristine ng-valid" type="password" placeholder="Confirm Password">
+    </div>
+
+    <button class='btn btn-primary pull-right ng-scope' style="margin-bottom: 10px; margin-top: 10px" ng-disabled='!(name && pass1 && (pass1 == pass2))' ng-click='create_user()' translate>Create</button>
+        
   </div>
+  
 </div>
