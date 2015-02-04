@@ -17,10 +17,10 @@
          jq-run="tooltip" class="glyphicon glyphicon-stop clickable" title="Disable"></i>
       <i ng-show="service.state == 'online'"
          ng-click="action({action: 'restart', service: service.service})"
-         jq-run="tooltip" class="glyphicon glyphicon-restart clickable" title="Restart"></i>
+         jq-run="tooltip" class="glyphicon glyphicon-refresh clickable" title="Restart"></i>
       <i ng-show="service.state == 'online'"
          ng-click="action({action: 'refresh', service: service.service})"
-         jq-run="tooltip" class="glyphicon glyphicon-refresh clickable" title="Refresh"></i>
+         jq-run="tooltip" class="glyphicon glyphicon-list-alt clickable" title="Refresh"></i>
       <i ng-show="service.state == 'degraded' || service.state == 'maintainance'"
          ng-click="action({action: 'clear', service: service.service})"
          jq-run="tooltip" class="glyphicon glyphicon-repeat clickable" title="Clear"></i>
