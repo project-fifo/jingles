@@ -505,7 +505,6 @@ angular.module('fifoApp')
         $scope.save_routes = function (routes) {
 
             var obj = {}
-            console.log(routes);
             routes.forEach(function(r) {
                 obj[r.destination] = r.gateway
             })
@@ -513,8 +512,11 @@ angular.module('fifoApp')
             wiggle.vms.put({id: $scope.vm.uuid},
                 {config: {set_routes: obj}},
                 function ok(data) {
-                    console.log('ok!', data)
                     status.success('Routes changed')
+
+                    $scope.routes = $scope.routes.concat(routes)
+                    $scope.newRoutes = []
+                    //updateVm()
                 },
                 function error(data) {
                     status.error('Could not save routes')
