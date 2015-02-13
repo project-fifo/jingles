@@ -378,7 +378,9 @@
           <!-- <br/><br/><br/><hr/> -->
           <div style='display: table; width: 100%; margin-bottom: 20px;'>
             <div class='pull-left'>
-              <h4 style='display: inline-block;' translate>Firewall</h4> <!-- <input style='margin-left: 8px' type='checkbox'/> -->
+              <h4 style='display: inline-block;' translate>Firewall</h4>
+              <!-- <input style='margin-left: 8px' type='checkbox'/> -->
+              <b ng-hide='vm._owner' class='alert' translate>(Must asign an owner to this VM to make the firewall work)</b>
               <div ng-hide='vm.fw_rules.length > 0 || newFwRules.length > 0' translate>There are no rules</div>
             </div>
 
