@@ -2,13 +2,18 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
 
-#: app/views/machine-new.html
-msgid ""
+#: app/views/machine.html
+msgid "(Must asign an owner to this VM to make the firewall work)"
 msgstr ""
 
 #: app/views/partials/header.html
 msgid "About"
+msgstr ""
+
+#: app/views/machine.html
+msgid "Action"
 msgstr ""
 
 #: app/views/network.html
@@ -270,6 +275,10 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
+#: app/views/machine.html
+msgid "Direction"
+msgstr ""
+
 #: app/views/machine-new.html
 #: app/views/partials/configs/packages.html
 msgid "Disk"
@@ -316,6 +325,10 @@ msgstr ""
 #: app/views/configurations.html
 #: app/views/machines.html
 msgid "Filter"
+msgstr ""
+
+#: app/views/machine.html
+msgid "Firewall"
 msgstr ""
 
 #: app/views/machine.html
@@ -458,6 +471,10 @@ msgid "Logout"
 msgstr ""
 
 #: app/views/machine.html
+msgid "Look"
+msgstr ""
+
+#: app/views/machine.html
 msgid "Mac"
 msgstr ""
 
@@ -549,6 +566,10 @@ msgstr ""
 msgid "Network tags"
 msgstr ""
 
+#: app/views/machine.html
+msgid "Networking"
+msgstr ""
+
 #: app/views/role.html
 #: app/views/server.html
 #: app/views/servers.html
@@ -591,6 +612,10 @@ msgstr ""
 
 #: app/views/machine.html
 msgid "New Route"
+msgstr ""
+
+#: app/views/machine.html
+msgid "New Rule"
 msgstr ""
 
 #: app/views/groupings.html
@@ -701,8 +726,16 @@ msgstr ""
 msgid "Pool"
 msgstr ""
 
+#: app/views/machine.html
+msgid "Ports"
+msgstr ""
+
 #: app/views/about.html
 msgid "Project FiFo"
+msgstr ""
+
+#: app/views/machine.html
+msgid "Protocol"
 msgstr ""
 
 #: app/views/server.html
@@ -793,7 +826,7 @@ msgstr ""
 
 #: app/views/user.html
 msgid ""
-"SSH Keys will be used when creating new KVM machines. They also will dynamically grant access"
+"SSH Keys will be used when creating new KVM machines. They also will dynamically grant access\n"
 "              to SmartOS zones. Based on the console access to the zone."
 msgstr ""
 
@@ -915,6 +948,10 @@ msgstr ""
 msgid "Tag"
 msgstr ""
 
+#: app/views/machine.html
+msgid "Target"
+msgstr ""
+
 #: app/views/organization.html
 msgid "Template"
 msgstr ""
@@ -924,11 +961,19 @@ msgid "The Team"
 msgstr ""
 
 #: app/views/machine.html
-msgid "There are no additonal rules"
+msgid "There are no routes"
+msgstr ""
+
+#: app/views/machine.html
+msgid "There are no rules"
 msgstr ""
 
 #: app/views/machines.html
 msgid "There is a change in the machines count. Click"
+msgstr ""
+
+#: app/views/machine.html
+msgid "Tip"
 msgstr ""
 
 #: app/views/main.html
@@ -985,7 +1030,6 @@ msgstr ""
 msgid "User script"
 msgstr ""
 
-#: app/views/main.html
 #: app/views/role.html
 #: app/views/user.html
 msgid "Users"
@@ -1083,6 +1127,7 @@ msgstr ""
 msgid "delete"
 msgstr ""
 
+#: app/views/machine.html
 #: app/views/machines.html
 msgid "here"
 msgstr ""
@@ -1093,6 +1138,14 @@ msgstr ""
 
 #: app/views/machines.html
 msgid "of"
+msgstr ""
+
+#: app/views/machine.html
+msgid "or"
+msgstr ""
+
+#: app/views/machine.html
+msgid "to know what info can be inserted into the target field."
 msgstr ""
 
 #: app/views/machines.html
