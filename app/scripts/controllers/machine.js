@@ -505,7 +505,6 @@ angular.module('fifoApp')
         $scope.save_routes = function (routes) {
 
             var obj = {}
-            console.log(routes);
             routes.forEach(function(r) {
                 obj[r.destination] = r.gateway
             })
@@ -513,14 +512,51 @@ angular.module('fifoApp')
             wiggle.vms.put({id: $scope.vm.uuid},
                 {config: {set_routes: obj}},
                 function ok(data) {
-                    console.log('ok!', data)
                     status.success('Routes changed')
+
+                    $scope.routes = $scope.routes.concat(routes)
+                    $scope.newRoutes = []
+                    //updateVm()
                 },
                 function error(data) {
                     status.error('Could not save routes')
                     console.error(data)
                 }
             )
+        }
+
+        $scope.delete_fw_rule = function(idx) {
+
+            var id = $scope.vm.fw_rules[idx].id
+
+            wiggle.vms.delete({id: $scope.vm.uuid, controller: 'fw_rules', controller_id: id},
+                function ok(data) {
+                    status.success('Rule deleted')
+                    $scope.vm.fw_rules.splice(idx, 1)
+                },
+                function error(data) {
+                    status.error('Could not delete rule')
+                    console.error(data)
+                })
+        }
+
+        $scope.save_fw_rule = function(rule) {
+            var r = angular.extend({}, rule)
+            r.ports = rule.ports.split(',').map(function(i) {return parseInt(i.trim(), 10)}).filter(function(i) {return i})
+
+            wiggle.vms.save({id: $scope.vm.uuid, controller: 'fw_rules'}, r,
+                function ok(data) {
+                    status.success('Rule saved')
+                    $scope.vm = angular.extend($scope.vm, data)
+
+                    var itemIdx = $scope.newFwRules.indexOf(rule)
+                    $scope.newFwRules.splice(itemIdx, 1)
+                },
+                function error(data) {
+                    status.error('Could not save rule')
+                    console.error(data)
+                })
+
         }
 
         $scope.add_nic = function add_nic(vm, network) {
