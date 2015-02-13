@@ -378,7 +378,9 @@
           <!-- <br/><br/><br/><hr/> -->
           <div style='display: table; width: 100%; margin-bottom: 20px;'>
             <div class='pull-left'>
-              <h4 style='display: inline-block;' translate>Firewall</h4> <input style='margin-left: 8px' type='checkbox'/>
+              <h4 style='display: inline-block;' translate>Firewall</h4>
+              <!-- <input style='margin-left: 8px' type='checkbox'/> -->
+              <b ng-hide='vm._owner' class='alert' translate>(Must asign an owner to this VM to make the firewall work)</b>
               <div ng-hide='vm.fw_rules.length > 0 || newFwRules.length > 0' translate>There are no rules</div>
             </div>
 
@@ -420,7 +422,7 @@
               </tr>
             </table>
             <div ng-show='newFwRules.length > 0' class='light' style='margin-bottom: 10px;'>
-                <b translate>Tip</b>: <span translate>Look</span> <a href='https://docs.project-fifo.net/en/latest/jingles/machines.html#firewall'>here</a> <span translate>or</span> <a href='https://github.com/project-fifo/chunter/blob/a833d0ec2ea982791c47e83a244ce995fc92f8a3/apps/chunter/src/chunter_fwadm.erl#L41-L56' translate>here</a> <span translate>to know what info can be inserted into the target field.</span>
+                <b translate>Tip</b>: <span translate>Look</span> <a href='https://docs.project-fifo.net/en/latest/jingles/machines.html#firewall' translate>here</a> <span translate>or</span> <a href='https://github.com/project-fifo/chunter/blob/a833d0ec2ea982791c47e83a244ce995fc92f8a3/apps/chunter/src/chunter_fwadm.erl#L41-L56' translate>here</a> <span translate>to know what info can be inserted into the target field.</span>
               </div>
           </div>
           <!-- end FW -->
