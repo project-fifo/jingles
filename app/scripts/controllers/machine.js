@@ -525,6 +525,40 @@ angular.module('fifoApp')
             )
         }
 
+        $scope.delete_fw_rule = function(idx) {
+
+            var id = $scope.vm.fw_rules[idx].id
+
+            wiggle.vms.delete({id: $scope.vm.uuid, controller: 'fw_rules', controller_id: id},
+                function ok(data) {
+                    status.success('Rule deleted')
+                    $scope.vm.fw_rules.splice(idx, 1)
+                },
+                function error(data) {
+                    status.error('Could not delete rule')
+                    console.error(data)
+                })
+        }
+
+        $scope.save_fw_rule = function(rule) {
+            var r = angular.extend({}, rule)
+            r.ports = rule.ports.split(',').map(function(i) {return parseInt(i.trim(), 10)}).filter(function(i) {return i})
+
+            wiggle.vms.save({id: $scope.vm.uuid, controller: 'fw_rules'}, r,
+                function ok(data) {
+                    status.success('Rule saved')
+                    $scope.vm = angular.extend($scope.vm, data)
+
+                    var itemIdx = $scope.newFwRules.indexOf(rule)
+                    $scope.newFwRules.splice(itemIdx, 1)
+                },
+                function error(data) {
+                    status.error('Could not save rule')
+                    console.error(data)
+                })
+
+        }
+
         $scope.add_nic = function add_nic(vm, network) {
             wiggle.vms.save({id: vm.uuid, controller: 'nics'},
                             {network: network},
