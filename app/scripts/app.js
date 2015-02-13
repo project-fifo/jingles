@@ -267,7 +267,7 @@ angular.module('fifoApp',
   }
 
   $rootScope.$on('auth:login_ok', function() {
-    //NO LOGS: $interval(getCloudStatus, (Config.statusPolling || 10) * 1000)
+    $interval(getCloudStatus, (Config.statusPolling || 10) * 1000)
     getCloudStatus()
   })
 })
