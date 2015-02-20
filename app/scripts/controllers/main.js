@@ -16,10 +16,6 @@ angular.module('fifoApp')
         $scope.activeOrg = wiggle.orgs.get({id: $scope.user.org})
     })
 
-    wiggle.cloud.get(function(res) {
-      $scope.has_s3 = res.metrics.storage == 's3'
-    })
-
     /* Update data on memory change */
     $scope.$on('memorychange', $scope.show);
 
