@@ -542,7 +542,27 @@ angular.module('fifoApp')
 
         $scope.save_fw_rule = function(rule) {
             var r = angular.extend({}, rule)
-            r.ports = rule.ports.split(',').map(function(i) {return parseInt(i.trim(), 10)}).filter(function(i) {return i})
+
+            //Parse the filters input
+            var filters = ''
+            if (rule.filters.indexOf('all') > -1)
+                filters = 'all'
+            else {
+                var filters = (rule.filters || '')
+                    .split(',')
+                    .map(function(i) { return parseInt(i.trim(), 10) })
+                    .filter(function(i) {return i})
+            }
+
+            //Parse the filters content into something, depending on the protocol selected.
+            if (rule.protocol == 'icmp') {
+                r.filters = {type: filters[0]}
+
+                if (filters.length > 1)
+                    r.filters.code = filters[1]
+            }
+            else
+                r.filters = filters
 
             wiggle.vms.save({id: $scope.vm.uuid, controller: 'fw_rules'}, r,
                 function ok(data) {
