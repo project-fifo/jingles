@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('fifoApp')
-  .controller('DatasetsCtrl', function ($scope, wiggle, datasetsat, status, $upload) {
+  .controller('DatasetsCtrl', function ($scope, wiggle, datasetsat, status, $upload, auth, $rootScope) {
 
     $scope.datasetsat = {};
     $scope.datasets = {};
@@ -95,6 +95,9 @@ angular.module('fifoApp')
       if (!Config.datasets)
         return status.error('Make sure your config has an URL for the remote datasets')
 
+      if ($rootScope.cloudStatus.metrics.storage != 's3')
+        return $scope.no_s3 = true
+
       /* Get the available datasets */
       $scope.loadingRemoteDatasets = true
       datasetsat.datasets.query(function ok(data) {
@@ -117,8 +120,10 @@ angular.module('fifoApp')
 
       datasets.forEach(processDataset)
 
-      //Load the remote available datasets after the local ones are loaded
-      loadRemoteDatasets()
+      //Load the remote available datasets after the local ones are loaded, and after the user has logged in, so we can see if store == s3.
+      auth.userPromise().then(function() {
+        loadRemoteDatasets()
+      })
 
     })
 

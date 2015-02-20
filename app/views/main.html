@@ -1,27 +1,5 @@
 <div class="row" ng-show='user'>
-  <div class="col-md-12" ng-hide="has_s3">
-    <div class="panel panel-warning">
-      <div class="panel-heading">
-        <span class="panel-title">
-          <span translate>Deprecation warning!</span>
-        </span>
-      </div>
-      <div class="panel-body">
-        <p>
-          The internal image storage is deprecated! For this release there is no impact on operations, however over the next couple of releases support for the internal storage will be slowly removed with the following plan (performed step marked in bold):<br/>
-          <ul>
-            <li>0.6.0 <b>Add deprecation warning</b></li>
-            <li>0.6.0 <b>Provide LeoFS all in one dataset</b></li>
-            <li>0.6.1 <b>Disable import of new datasets into interla store.</b></li>
-            <li>0.6.2 Remove internal daataset store.</li>
-          </ul>
-        </p>
-      </div>
-    </div>
-
-  </div>
   <div class="col-md-6">
-
     <div class="welcome">
       <h3 translate>Welcome {{user.name}}!</h3>
 
