@@ -384,14 +384,14 @@
               <div ng-hide='vm.fw_rules.length > 0 || newFwRules.length > 0' translate>There are no rules</div>
             </div>
 
-            <button class='btn btn-default pull-right' ng-click="newFwRules.push({action: 'allow', direction: 'inbound', protocol: 'tcp', target: 'all'})" translate>New Rule</button>
+            <button ng-show='vm._owner' class='btn btn-default pull-right' ng-click="newFwRules.push({action: 'allow', direction: 'inbound', protocol: 'tcp', target: 'all'})" translate>New Rule</button>
 
-            <table ng-show='vm.fw_rules.length > 0 || newFwRules.length > 0' class='table table-condensed table-hover'>
+            <table ng-show='vm._owner && (vm.fw_rules.length > 0 || newFwRules.length > 0)' class='table table-condensed table-hover'>
               <tr class='small'>
                 <th translate>Action</th>
                 <th translate>Direction</th>
                 <th translate>Protocol</th>
-                <th translate>Ports</th>
+                <th translate>Filters</th>
                 <th translate>Target</th>
                 <th></th>
               </tr>
@@ -399,7 +399,7 @@
                 <td>{{rule.action}}</td>
                 <td>{{rule.direction}}</td>
                 <td>{{rule.protocol}}</td>
-                <td>{{rule.ports.join(', ')}}</td>
+                <td>{{rule.filters.join(', ')}}</td>
                 <td>{{rule.target}}</td>
                 <td><i style='padding: 7px' class='glyphicon glyphicon-trash clickable' ng-click='delete_fw_rule($index)'></i></td>
               </tr>
@@ -411,9 +411,9 @@
                         ng-options="dir.id as dir.name for dir in [{id: 'inbound', name: 'Inbound'}, {id: 'outbound', name: 'Outbound'}]">
                     </select></td>
                 <td><select ng-model="rule.protocol" class='form-control'
-                        ng-options="pro.id as pro.name for pro in [{id: 'tcp', name: 'TCP'}, {id: 'udp', name: 'UDP'}]">
+                        ng-options="pro.id as pro.name for pro in [{id: 'tcp', name: 'TCP'}, {id: 'udp', name: 'UDP'}, {id: 'icmp', name: 'ICMP'}]">
                     </select></td>
-                <td><input class='form-control' ng-model='rule.ports' title='Separate multiple ports by coma' jq-run="tooltip"/> </td>
+                <td><input class='form-control' ng-model='rule.filters' title='Separate multiple ports by comma, "all" for all ports, or "8,1" in case ICMP is selected for TYPE 8 and CODE 1, or just "8" for TYPE 8' jq-run="tooltip"/> </td>
                 <td><input class='form-control' ng-model='rule.target'/> </td>
                 <td style='width: 1px;'>
                   <i style='padding: 7px; padding-right: 16px;' class='glyphicon glyphicon-floppy-disk clickable' ng-click='save_fw_rule(rule)'></i>
