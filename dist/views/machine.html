@@ -384,7 +384,7 @@
               <div ng-hide='vm.fw_rules.length > 0 || newFwRules.length > 0' translate>There are no rules</div>
             </div>
 
-            <button ng-show='vm._owner' class='btn btn-default pull-right' ng-click="newFwRules.push({action: 'allow', direction: 'inbound', protocol: 'tcp', target: 'all'})" translate>New Rule</button>
+            <button ng-show='vm._owner' class='btn btn-default pull-right' ng-click="newFwRules.push({action: 'allow', direction: 'inbound', protocol: 'tcp', filters: 'all', target: 'all'})" translate>New Rule</button>
 
             <table ng-show='vm._owner && (vm.fw_rules.length > 0 || newFwRules.length > 0)' class='table table-condensed table-hover'>
               <tr class='small'>
@@ -395,12 +395,12 @@
                 <th translate>Target</th>
                 <th></th>
               </tr>
-              <tr ng-repeat='rule in vm.fw_rules'>
+              <tr ng-repeat='rule in vm.fw_rules | orderBy: ["direction"]'>
                 <td>{{rule.action}}</td>
                 <td>{{rule.direction}}</td>
                 <td>{{rule.protocol}}</td>
-                <td>{{rule.filters.join(', ')}}</td>
-                <td>{{rule.target}}</td>
+                <td>{{rule.filters.join(', ') || rule.filters}}</td>
+                <td>{{rule.target.ip || (rule.target.subnet && rule.target.subnet + '/' + rule.target.mask) || rule.target }}</td>
                 <td><i style='padding: 7px' class='glyphicon glyphicon-trash clickable' ng-click='delete_fw_rule($index)'></i></td>
               </tr>
               <tr ng-repeat='rule in newFwRules'>
@@ -414,7 +414,7 @@
                         ng-options="pro.id as pro.name for pro in [{id: 'tcp', name: 'TCP'}, {id: 'udp', name: 'UDP'}, {id: 'icmp', name: 'ICMP'}]">
                     </select></td>
                 <td><input class='form-control' ng-model='rule.filters' title='Separate multiple ports by comma, "all" for all ports, or "8,1" in case ICMP is selected for TYPE 8 and CODE 1, or just "8" for TYPE 8' jq-run="tooltip"/> </td>
-                <td><input class='form-control' ng-model='rule.target'/> </td>
+                <td><input class='form-control' ng-model='rule.target' title='IP, network in the form "192.168.1.0/24", or "any" for any target' jq-run='tooltip'/> </td>
                 <td style='width: 1px;'>
                   <i style='padding: 7px; padding-right: 16px;' class='glyphicon glyphicon-floppy-disk clickable' ng-click='save_fw_rule(rule)'></i>
                   <i style='padding: 7px' class='glyphicon glyphicon-remove clickable' ng-click='newFwRules.splice($index,1)'></i>
