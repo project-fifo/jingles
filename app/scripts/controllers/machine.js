@@ -540,7 +540,23 @@ angular.module('fifoApp')
                 })
         }
 
-        $scope.save_fw_rule = function(rule) {
+        var fw_build_rule_target = function(target) {
+
+            var ip_form = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/,
+                net_form = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,2})/
+
+            var net_match = target.match(net_form)
+            if (net_match)
+                return {subnet: net_match[1], mask: net_match[2]}
+
+            if (target.match(ip_form))
+                return {ip: target}
+
+            return target
+        }
+
+        var fw_build_rule = function(rule) {
+
             var r = angular.extend({}, rule)
 
             //Parse the filters input
@@ -563,6 +579,16 @@ angular.module('fifoApp')
             }
             else
                 r.filters = filters
+
+            //Parse the target
+            r.target = fw_build_rule_target(r.target.trim())
+
+            return r
+        }
+
+        $scope.save_fw_rule = function(rule) {
+
+            var r = fw_build_rule(rule)
 
             wiggle.vms.save({id: $scope.vm.uuid, controller: 'fw_rules'}, r,
                 function ok(data) {
