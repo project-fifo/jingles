@@ -547,7 +547,7 @@ angular.module('fifoApp')
 
             var net_match = target.match(net_form)
             if (net_match)
-                return {subnet: net_match[1], mask: net_match[2]}
+                return {subnet: net_match[1], mask: parseInt(net_match[2], 10)}
 
             if (target.match(ip_form))
                 return {ip: target}
