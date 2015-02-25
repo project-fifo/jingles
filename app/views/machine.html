@@ -405,7 +405,7 @@
               </tr>
               <tr ng-repeat='rule in newFwRules'>
                 <td><select ng-model="rule.action" class='form-control'
-                        ng-options="action.id as action.name for action in [{id: 'allow', name: 'Allow'}, {id: 'disallow', name: 'Disallow'}]">
+                        ng-options="action.id as action.name for action in [{id: 'allow', name: 'Allow'}, {id: 'block', name: 'Block'}]">
                     </select></td>
                 <td><select ng-model="rule.direction" class='form-control'
                         ng-options="dir.id as dir.name for dir in [{id: 'inbound', name: 'Inbound'}, {id: 'outbound', name: 'Outbound'}]">
