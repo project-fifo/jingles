@@ -372,36 +372,90 @@
           </table>
         </div>
 
-        <div class="tab-pane" id='net' ng-init='newRoutes=[]'>
-          <div class="pane-nav">
-            <h5 ng-hide='routes.length > 0 || newRoutes.length > 0' class='pull-left' translate>There are no additonal rules</h5>
-            <h4 ng-show='routes.length > 0 || newRoutes.length > 0' class='pull-left' translate>Routes</h4>
-            <button class='btn btn-default' ng-click="newRoutes.push({})" translate>New Route</button>
+        <div class="tab-pane" id='net' ng-init='newRoutes=[]; newFwRules=[]'>
+
+          <!-- FW -->
+          <!-- <br/><br/><br/><hr/> -->
+          <div style='display: table; width: 100%; margin-bottom: 20px;'>
+            <div class='pull-left'>
+              <h4 style='display: inline-block;' translate>Firewall</h4>
+              <!-- <input style='margin-left: 8px' type='checkbox'/> -->
+              <b ng-hide='vm._owner' class='alert' translate>(Must asign an owner to this VM to make the firewall work)</b>
+              <div ng-hide='vm.fw_rules.length > 0 || newFwRules.length > 0' translate>There are no rules</div>
+            </div>
+
+            <button ng-show='vm._owner' class='btn btn-default pull-right' ng-click="newFwRules.push({action: 'allow', direction: 'inbound', protocol: 'tcp', filters: 'all', target: 'all'})" translate>New Rule</button>
+
+            <table ng-show='vm._owner && (vm.fw_rules.length > 0 || newFwRules.length > 0)' class='table table-condensed table-hover'>
+              <tr class='small'>
+                <th translate>Action</th>
+                <th translate>Direction</th>
+                <th translate>Protocol</th>
+                <th translate>Filters</th>
+                <th translate>Target</th>
+                <th></th>
+              </tr>
+              <tr ng-repeat='rule in vm.fw_rules | orderBy: ["direction"]'>
+                <td>{{rule.action}}</td>
+                <td>{{rule.direction}}</td>
+                <td>{{rule.protocol}}</td>
+                <td>{{rule.filters.join(', ') || rule.filters}}</td>
+                <td>{{rule.target.ip || (rule.target.subnet && rule.target.subnet + '/' + rule.target.mask) || rule.target }}</td>
+                <td><i style='padding: 7px' class='glyphicon glyphicon-trash clickable' ng-click='delete_fw_rule($index)'></i></td>
+              </tr>
+              <tr ng-repeat='rule in newFwRules'>
+                <td><select ng-model="rule.action" class='form-control'
+                        ng-options="action.id as action.name for action in [{id: 'allow', name: 'Allow'}, {id: 'block', name: 'Block'}]">
+                    </select></td>
+                <td><select ng-model="rule.direction" class='form-control'
+                        ng-options="dir.id as dir.name for dir in [{id: 'inbound', name: 'Inbound'}, {id: 'outbound', name: 'Outbound'}]">
+                    </select></td>
+                <td><select ng-model="rule.protocol" class='form-control'
+                        ng-options="pro.id as pro.name for pro in [{id: 'tcp', name: 'TCP'}, {id: 'udp', name: 'UDP'}, {id: 'icmp', name: 'ICMP'}]">
+                    </select></td>
+                <td><input class='form-control' ng-model='rule.filters' title='Separate multiple ports by comma, "all" for all ports, or "8,1" in case ICMP is selected for TYPE 8 and CODE 1, or just "8" for TYPE 8' jq-run="tooltip"/> </td>
+                <td><input class='form-control' ng-model='rule.target' title='IP, network in the form "192.168.1.0/24", or "any" for any target' jq-run='tooltip'/> </td>
+                <td style='width: 1px;'>
+                  <i style='padding: 7px; padding-right: 16px;' class='glyphicon glyphicon-floppy-disk clickable' ng-click='save_fw_rule(rule)'></i>
+                  <i style='padding: 7px' class='glyphicon glyphicon-remove clickable' ng-click='newFwRules.splice($index,1)'></i>
+                </td>
+              </tr>
+            </table>
+            <div ng-show='newFwRules.length > 0' class='light' style='margin-bottom: 10px;'>
+                <b translate>Tip</b>: <span translate>Look</span> <a href='https://docs.project-fifo.net/en/latest/jingles/machines.html#firewall' translate>here</a> <span translate>or</span> <a href='https://github.com/project-fifo/chunter/blob/a833d0ec2ea982791c47e83a244ce995fc92f8a3/apps/chunter/src/chunter_fwadm.erl#L41-L56' translate>here</a> <span translate>to know what info can be inserted into the target field.</span>
+              </div>
           </div>
-          <table ng-show='routes.length > 0 || newRoutes.length > 0' class='table table-condensed table-hover'>
-            <tr class='small'>
-              <th translate>Destination</th>
-              <th translate>Gateway</th>
-              <th></th>
-            </tr>
-            <tr ng-repeat='route in routes'>
-              <td>{{route.destination}}</td>
-              <td>{{route.gateway}}</td>
-              <td><i style='padding: 7px' class='glyphicon glyphicon-trash clickable' ng-click='delete_route(route)'></i></td>
-            </tr>
-            <tr ng-repeat='route in newRoutes'>
-              <td><input class='form-control' ng-model='route.destination'/></td>
-              <td><input class='form-control' ng-model='route.gateway'/> </td>
-              <td><i style='padding: 7px' class='glyphicon glyphicon-remove clickable' ng-click='newRoutes.splice($index,1)'></i></td>
-            </tr>
-          </table>
+          <!-- end FW -->
+
+          <!-- Routes -->
+          <div style='display: table; width: 100%; margin-bottom: 20px;'>
+            <div class='pull-left'>
+              <h4 translate>Routes</h4>
+              <div ng-hide='routes.length > 0 || newRoutes.length > 0' translate>There are no routes</div>
+            </div>
+            <button class='btn btn-default pull-right' ng-click="newRoutes.push({})" translate>New Route</button>
+
+            <table ng-show='routes.length > 0 || newRoutes.length > 0' class='table table-condensed table-hover'>
+              <tr class='small'>
+                <th translate>Destination</th>
+                <th translate>Gateway</th>
+                <th></th>
+              </tr>
+              <tr ng-repeat='route in routes'>
+                <td>{{route.destination}}</td>
+                <td>{{route.gateway}}</td>
+                <td><i style='padding: 7px' class='glyphicon glyphicon-trash clickable' ng-click='delete_route(route)'></i></td>
+              </tr>
+              <tr ng-repeat='route in newRoutes'>
+                <td><input class='form-control' ng-model='route.destination'/></td>
+                <td><input class='form-control' ng-model='route.gateway'/> </td>
+                <td><i style='padding: 7px' class='glyphicon glyphicon-remove clickable' ng-click='newRoutes.splice($index,1)'></i></td>
+              </tr>
+            </table>
 
           <button ng-show='newRoutes.length > 0' class='btn btn-success pull-right' ng-click='save_routes(newRoutes)' translate>Save new rules</button>
+          </div> <!-- end routes -->
 
-          <!-- <h4 translate>Firewall</h4> -->
-
-          <br/>
-          <br/>
           <hr/>
           <div class="box col-md-4" style='clear: both;'>
             <div class="header">
