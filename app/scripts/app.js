@@ -7,7 +7,7 @@ var wait = {
 }
 
 function help_url(page, section) {
-    return "https://docs.project-fifo.net/jingles/" + page +".html#" + section;
+    return "https://docs.project-fifo.net/en/stable/jingles/" + page +".html#" + section;
 }
 
 angular.module('fifoApp',
