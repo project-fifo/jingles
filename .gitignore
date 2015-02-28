@@ -7,8 +7,8 @@ target/
 app/tmp
 *.version
 app/scripts/config.js
-pkg/build-info
-pkg/packlist
+rel/pkg/build-info
+rel/pkg/packlist
 node_modules
 .tmp
 .sass-cache
