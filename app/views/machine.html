@@ -346,12 +346,20 @@
           </p>
 
           <table class="table table-condensed table-hover pull-left">
+            <tr>
+              <th></th>
+              <th translate>Message</th>
+              <th class='nowrap' title='Size in the hypervisor' jq-run='tooltip' jq-options="{placement: 'top', container: 'body'}">Local Size</th>
+              <th title='Size in storage (s3)' jq-run='tooltip' jq-options="{placement: 'top', container: 'body'}">Size</th>
+              <th translate>State</th>
+              <th></th>
+              <th></th>
+            </tr>
             <tr ng-repeat="b in backups | hash2array | orderBy: '-timestamp' ">
               <td class='nowrap'> <i class='glyphicon' ng-class='glyphicon-cloud'></i></td>
               <td class='nowrap' style="width: 35%"><strong title='{{b.uuid}}' jq-run='tooltip'>{{b.comment}}</strong></td>
               <td class='nowrap light'><span ng-show="b.local_size && b.local_size > 0">{{b.local_size | bytes}}</span></td>
               <td class='nowrap light'><span ng-show="b.size">{{b.size | bytes}}</span></td>
-              <td class='nowrap light'>{{b.message}}</td>
               <td><span class='label label-default' ng-class='{ "label-success" : b.state == "completed" , "label-warning" : b.state == "deleting" || b.state=="uploading" || b.state=="pending", "label-danger" : b.state == "error" }'>{{b.state}}</span></td>
               <td class='nowrap light'><span title="{{b.timestamp/1000 | date:'medium'}}" jq-run='tooltip' jq-option="{placement: 'bottom'}" am-time-ago='b.timestamp/1000'></span> </td>
               <td class='nowrap'>
