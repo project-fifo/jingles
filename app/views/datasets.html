@@ -51,7 +51,7 @@
             <div class='pane-nav'>
               Datasets are hosted and managed by <a ng-href="{{endpoint}}">{{endpoint}}</a>
             </div>
-            <div ng-if='no_s3' class='text-center alert alert-info'>The internal image storage is deprecated. Please <a href='https://docs.project-fifo.net/en/stable/general/installation.html#leofs'>setup</a> an S3 backend for storing datasets.</div>
+            <div ng-if='no_s3' class='text-center alert alert-danger'>Images can't be imported. The internal storage is deprecated. Please <a href='https://docs.project-fifo.net/en/stable/general/installation.html#leofs'>setup</a> an S3 backend for storing them.</div>
             <h4 ng-if='loadingRemoteDatasets' class='text-center text-muted'>Loading...</h4>
             <table class="table table-condensed table-hover" ng-if='loadingRemoteDatasets == false'>
               <thead>
