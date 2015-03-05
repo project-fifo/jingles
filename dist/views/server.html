@@ -103,6 +103,8 @@
                 <dd>{{hyper.resources["provisioned-memory"] | Mbytes}}</dd>
                 <dt translate>Free</dt>
                 <dd>{{hyper.resources["free-memory"] | Mbytes}}</dd>
+                <dt translate>Reserved</dt>
+                <dd>{{hyper.resources['reserved-memory'] | Mbytes }}</dd>
                 <dt translate>L1 Size</dt>
                 <dd>{{hyper.resources["l1size"] | Mbytes}}</dd>
                 <dt translate>L1 Arc hit %</dt>
@@ -173,6 +175,9 @@
         </div>
 
         <div class="tab-pane" id="performance">
+          <span ng_show="grafana">
+            <a target="_new" href="{{grafana}}/hypervisor?Hypervisor={{hyper.alias}}">grafana</a></br>
+          </span>
           <div class="row-fluid">
 
             <div class="perfbox pull-left">
@@ -184,12 +189,12 @@
             </div>
           </div>
         </div>
-        <div class="tab-pane" id='services'>
+        <div class="tab-pane" id="services">
           <services
-            ng-model='hyper.services'
-            show-disabled='show_disabled_services'
-            action='service_action(action, service)'
-            channel='hyper.uuid'>
+             ng-model='hyper.services'
+             show-disabled='show_disabled_services'
+             action='service_action(action, service)'
+             channel='hyper.uuid'>
           </services>
         </div>
 
@@ -201,7 +206,7 @@
           <br/>
           <table ng-hide="characteristics.length<1" class="table table-condensed table-hover table-bordered">
             <tr ng-repeat='ch in characteristics'>
-              <th>{{ch.name}}</th>
+              <td><strong>{{ch.name}}</strong></td>
               <td><input type='text' class='form-control' ng-model='ch.value'/></td>
               <td style='width: 40px;'><button class='btn btn-danger pull-right' ng-click='del(ch.name, $index)'>-</button></td>
             </tr>
@@ -220,5 +225,5 @@
 
       </div>
     </div>
-    <div>
-    </div>
+  </div>
+</div>

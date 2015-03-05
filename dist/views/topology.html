@@ -1,0 +1,63 @@
+
+<div id='svg-container' class='col-md-7' topology servers='servers' selected='selected'></div>
+
+<div class='col-md-5'>
+
+<div translate class='well' ng-hide='selected'>Please select a server to setup its topology</div>
+
+<div class="panel panel-default" ng-if='selected'>
+
+	<div class="panel-heading">
+		<span translate>Server</span>
+		<span><a ng-href="#/servers/{{selected.uuid}}">{{selected.alias}}</a></span>
+	</div>
+	<div class="panel-body">
+
+		<dt translate>Brand</dt>
+			<dd>{{selected.sysinfo.Product}} - {{selected.sysinfo.Manufacturer}}</dd>
+		<dt translate>CPU</dt>
+			<dd>{{selected.sysinfo["CPU Physical Cores"]}} x {{selected.sysinfo['CPU Type']}} ({{selected.sysinfo["CPU Total Cores"]}} cores)</dd>
+
+        <dt translate>Memory</dt>
+        	<dd>{{selected.resources["free-memory"] | Mbytes}} free of {{selected.resources["total-memory"] | Mbytes}} ({{(selected.resources["free-memory"]*100/selected.resources["total-memory"]).toFixed(2)}}%)</dd>
+
+		<dt translate>L1 ARC</dt>
+			<dd>{{selected.resources["l1size"] | Mbytes}} giving {{(selected.resources["l1hits"]*100/(selected.resources["l1hits"] + selected.resources["l1miss"])).toFixed(2)}}% hit rate</dd>
+
+		<dt translate>Main IP</dt>
+			<dd>{{selected.host}}</dd>
+
+	</div>
+
+</div>
+</div>
+
+<div class='col-md-5'>
+<div class="panel panel-info" ng-if='selected'>
+	<div class="panel-heading">
+		<span translate>Path of server</span> {{selected.alias}}
+		<button class='btn btn-default btn-xs pull-right' ng-click="paths.splice(0,0,{name: 'path' + paths.length, cost: 1})" translate>New Path</button>
+	</div>
+
+	<div class="panel-body">
+		
+		<table class='table table-condensed'>
+			<tr class='small'>
+				<th translate style='width: 80%'>Name</th>
+				<th translate>Cost</th>
+				<th></th>
+			</tr>
+
+			<tr ng-repeat='path in paths'>
+				<td><input class='form-control' ng-model='path.name' ng-disabled='!($index<paths.length - 1)' /></td>
+				<td><input class='form-control' ng-model='path.cost' type='number' ng-disabled='!($index<paths.length - 1)' /></td>
+				<td><i class='glyphicon glyphicon-remove clickable' style='padding: 7px;' ng-click="paths.splice($index,1)" ng-if='$index<paths.length - 1'></i></td>
+			</tr>
+
+		</table>
+
+		<button class='btn btn-default pull-right' ng-click="save(paths)">Save Paths</button>
+
+	</div>
+</div>
+</div>

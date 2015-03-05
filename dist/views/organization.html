@@ -24,11 +24,12 @@
     <div class="header" translate>Automatic grants on creation</div>
     <select ng-model="created_object">
       <option value="vm_create" translate>VM</option>
+      <option value="grouping_create" translate>Grouping</option>
       <option value="dataset_create" translate>Dataset</option>
     </select>
-      
-    <select ng-model="grant_group">
-      <option ng-repeat="grp in groups | hash2array" value="{{grp.uuid}}">{{grp.name}}</option>
+
+    <select ng-model="grant_role">
+      <option ng-repeat="role in roles | hash2array" value="{{role.uuid}}">{{role.name}}</option>
     </select>
     <select ng-model="permission">
       <option value="_" translate>Everything</option>
@@ -46,12 +47,12 @@
 
     <table class='table table-bordered'>
       <tr>
-        <th translate>Group</th>
+        <th translate>Role</th>
         <th translate>Template</th>
         <th translate>Actions</th>
       </tr>
       <tr ng-repeat="trigger in grant_triggers | hash2array">
-        <td>{{(groups[trigger.target] ||
+        <td>{{(roles[trigger.target] ||
           {name: "DELETED"}).name}}({{trigger.target}})</td>
         <td>{{trigger.permission.join("->")}}</td>
         <td><a ng-click="delete_grant_trigger(trigger)">delete</a>
@@ -61,26 +62,37 @@
   </div>
   <div class="box">
     <div class="header" translate>Automatic joins on user creation</div>
-    Group: <select ng-model="join_group">
-      <option ng-repeat="grp in groups | hash2array" value="{{grp.uuid}}">{{grp.name}}</option>
+    Role: <select ng-model="join_role">
+      <option ng-repeat="role in roles | hash2array" value="{{role.uuid}}">{{role.name}}</option>
     </select>
-    <button ng-click="add_group_join_trigger()" class='btn btn-default'>Add trigger</button></br>
+    <button ng-click="add_role_join_trigger()" class='btn btn-default'>Add trigger</button></br>
     Organization: <select ng-model="join_org">
       <option ng-repeat="org in orgs | hash2array" value="{{org.uuid}}">{{org.name}}</option>
     </select>
     <button ng-click="add_org_join_trigger()" class='btn btn-default'>Add trigger</button></br>
     <table class='table table-bordered'>
       <tr>
-        <th translate>Org/Group</th>
+        <th translate>Org/Role</th>
         <th translate>Actions</th>
       </tr>
       <tr ng-repeat="trigger in join_triggers | hash2array">
         <td>{{(orgs[trigger.target] ||
-          groups[trigger.target] ||
+          roles[trigger.target] ||
           {name: "DELETED"}).name}}({{trigger.target}})</td>
         <td><a ng-click="delete_join_trigger(trigger)">delete</a>
         </td>
       </tr>
     </table>
+  </div>
+  <div class="box">
+    <div ng-repeat="(uuid, res) in org.resources">
+      <h4>{{uuid}}</h4>
+      <table>
+        <tr ng-repeat="r in res | orderBy: 'time'">
+          <td>{{r.time/1000 | date:'medium'}}</td>
+          <td>{{r.action}}</td><tr>
+      </table>
+      <hr/>
+    </div>
   </div>
 </div>

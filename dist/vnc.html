@@ -6,45 +6,81 @@
     <meta name="description" content="Project FiFo administrative console">
     <meta name="author" content="http://project-fifo.net">
 
-    <link rel="stylesheet" href="styles/e43b0682.vnc.css" media="screen">
+    <link rel="stylesheet" href="styles/c7af94db.vnc.css" media="screen">
 
+    <style>
+      header, footer {
+        position: fixed;
+        width: 100%;
+      }
+
+      header {
+        top: 0px;
+      }
+
+      footer {
+        bottom: 0px;
+      }
+
+      .main {
+        padding-top: 30px;
+      }
+
+      .alert-error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+      }
+
+      .alert-error hr {
+        border-top-color: #e4b9c0;
+      }
+
+      .alert-error .alert-link {
+        color: #843534;
+      }
+    </style>
   </head>
   <body>
 
-    <div class="container">
-      <!-- Example row of columns -->
-      <div id="noVNC_screen col-md-4">
-        <div id="noVNC_status_bar">
-            <div id="noVNC_status" class="col-md-4 alert alert-info">
-              Loading
-            </div>
-
-            <div id="noVNC_buttons" class="col-md-3">
-              <input type=button value="Send CtrlAltDel!" id="sendCtrlAltDelButton">
-            </div>
-
-          <div class="row">
-            <div id="noVNC_buttons" class="col-md-4">
-              <canvas id="noVNC_canvas" width="100%" height="100%">
-                Canvas not supported.
-              </canvas>
-            </div>
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <img src="images/fifo.png"></img> VNC Console
           </div>
+          <div class="col-md-9 text-right" style="line-height: 41px;">
+            <input class="btn btn-default" type="button" value="Send Ctrl+Alt+Del" id="sendCtrlAltDelButton">
+          </div>
+        </div>
+        <hr>
+      </div>
+    </header>
 
+    <div class="main container">
+      <div id="noVNC_status_bar">
+        <div id="noVNC_status" class="alert alert-info">
+          Loading
         </div>
       </div>
+      <div id="noVNC_screen"><center>
+        <canvas id="noVNC_canvas" width="100%" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px;">
+          Canvas not supported.
+        </canvas>
+      </center></div>
     </div>
+
     <footer>
-      <hr>
-      <p class="copy">
-        &copy; <a href="http://project-fifo.net">Project FiFo</a></p>
+      <div class="container">
+        <hr>
+        <p class="copy"> &copy; <a href="http://project-fifo.net">Project FiFo</a></p>
+      </div>
     </footer>
+
     <script type="application/javascript">INCLUDE_URI="vendor/vnc/";</script>
 
     <script src="scripts/8199e600.vnc_lib.js"></script>
 
-    <script src="scripts/abbbfde3.vnc.js"></script>
-
-
+    <script src="scripts/9d7da8da.vnc.js"></script>
 
 </html>

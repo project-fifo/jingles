@@ -18,53 +18,50 @@
                 <li ng-class="{active: isActive('machines')}"><a href="#/machines" translate permission="['cloud','vms','list']">Machines</a></li>
                 <li ng-class="{active: isActive('datasets')}"><a href="#/datasets" translate permission=['cloud','datasets','list']>Datasets</a></li>
                 <li ng-class="{active: isActive('servers')}"><a href="#/servers" translate permission=['cloud','hypervisors','list']>Servers</a></li>
-                <li ng-class="{active: isActive('configuration')}"><a href="#/configuration" translate>Config</a></li>
-                <!-- <li ng-class="{active: isActive('configuration')}" class='dropdown'>
-                    <a class='dropdown-toggle' data-toggle='dropdown'><span translate>Config</span> <b class='caret'></b></a>
-                    <ul class='dropdown-menu'>
-                        <li ng-class="{active: isActive('packages')}"><a href="#/configuration/packages" translate permission=['cloud','packages','list']>Packages</a></li>
-                        <li class='divider'></li>
-                        <li class='dropdown-header' translate>Networking</li>
-                        <li ng-class="{active: isActive('networks')}"><a href="#/configuration/networks" translate permission=['cloud','networks','list']>Networks</a></li>
-                        <li ng-class="{active: isActive('ip-ranges')}"><a href="#/configuration/ip-ranges" translate permission=['cloud','ipranges','list']>IP Ranges</a></li>
-                        <li class='divider'></li>
-                        <li class='dropdown-header' translate>Permissions</li>
-                        <li ng-class="{active: isActive('users')}"><a href="#/configuration/users" translate permission=['cloud','users','list']>Users</a></li>
-                        <li ng-class="{active: isActive('groups')}"><a href="#/configuration/groups" translate permission=['cloud','groups','list']>Groups</a></li>
-                        <li ng-class="{active: isActive('organizations')}"><a href="#/configuration/organizations" translate permission=['cloud','orgs','list']>Organizations</a></li>
-                        <li class='divider'></li>
-                        <li class='dropdown-header' translate>Scripts</li>
-                        <li ng-class="{active: isActive('dtraces')}"><a href='#/configuration/dtraces' translate permission=['cloud','dtraces','list']>DTrace</a></li>
+                <li ng-if='showMore'>
+                    <a class="dropdown-toggle" data-toggle="dropdown"><span translate>More</span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: isActive('groupings')}"><a href="#/groupings" translate permission=['cloud','groupings','list']>Stacks & Clusters</a></li>
+                        <li ng-class="{active: isActive('topology')}"><a href="#/servers/topology" translate permission=['cloud','hypervisors','list']>Servers topology</a></li>
+                        <li class="divider" ng-if='showConfig'></li>
+                        <li ng-class="{active: isActive('configuration')}" ng-if='showConfig'><a href="#/configuration" translate>Configuration</a></li>
                     </ul>
-                </li> -->
-
+                </li>
             </ul>
 
-
             <ul class="nav navbar-nav navbar-right">
-
                 <li class='dtopdown'>
                      <form class="navbar-form navbar-right" ng-show='backends.length > 1' style="margin-top: 10px;">
-                    <select 
-                        ng-model='selected_backend' 
+                    <select
+                        ng-model='selected_backend'
                         ng-change='changeBackend(this.selected_backend)'
                         ng-options="b.name for b in backends">
                     </select>
                 </form>
                 </li>
-                <li class='dropdown'>
+                <li class='dropdown' ng-if='cloudStatus.cloud_ok==false'>
                     <a class="dropdown-toggle" data-toggle='dropdown'>
-                        <i class='flag-icon {{lang}}'></i>
+                        <i class='glyphicon glyphicon-exclamation-sign' style='color: red;'></i>
                     </a>
                     <ul class="dropdown-menu" role='menu'>
-                        <li ng-repeat='lang in languages'>
-                            <a ng-click="setLang(lang)">
-                                <i class='flag-icon {{lang}}'></i>
-                                <span class='capitalize'>&nbsp;&nbsp;{{lang}}</span>
+                        <li ng-repeat='msg in cloudStatus.messages | filter:{ok: !true}'>
+                            <a href='#/'>
+                                <span>{{msg.message}}</span>
                             </a>
                         </li>
                     </ul>
                 </li>
+                <li class='dropdown' title='Language'>
+                    <a class="dropdown-toggle capitalize" data-toggle='dropdown'><small class='text text-muted'>{{lang.name}}</small></a>
+                    <ul class="dropdown-menu" role='menu'>
+                        <li ng-repeat='lang in languages'>
+                            <a ng-click="setLang(lang.locale)">
+                                <span class='capitalize'>&nbsp;&nbsp;{{lang.name}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
 
                 <li class='dropdown'>
                     <a class="dropdown-toggle" data-toggle="dropdown">

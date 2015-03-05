@@ -1,0 +1,88 @@
+
+
+<div class="pane-nav" style='margin-top: 18px'>
+  <h3 class='pull-left' ng-if='(stacks|hash2array).length>0'><span translate>Stacks and Clusters</span></h3>
+  <button class="btn btn-default small" ng-click="add_stack()" permission=['cloud','groupings','create'] translate>New Stack</button>
+  <button class="btn btn-default small" ng-click="add_cluster()" permission=['cloud','groupings','create'] translate>New Cluster</button>
+</div>
+<br/>
+
+<!-- Stack's container -->
+<div>
+
+  <div class="panel panel-default pull-left" style='width: 250px; min-height: 240px; margin: 10px' ng-repeat="stack in stacks | hash2array | orderBy: 'name'">
+
+    <div class="panel-heading">
+      {{stack.name}}
+      <i permission=['groupings','{{stack.uuid}}','delete'] class='glyphicon glyphicon-trash pull-right clickable'
+      ng-click='delete_grouping(stack)' jq-run='tooltip' title='Delete this stack' bs-modal="'views/partials/modal-confirm.html'"></i>
+    </div>
+
+    <div class="panel-body">
+
+      <div ng-if='!stack.elements.length'>
+        <div class='text text-muted center' translate>No clusters in this stack</div>
+        <br/><br/>
+      </div>
+
+      <div class='alert alert-warning' ng-repeat='c in stack._elements' style='padding: 10px; margin-bottom: 6px' >
+        {{c.name}}
+        <!-- <span>Present in {{c.groupings.length}} stacks</span> -->
+        <i permission=['groupings','{{stack.uuid}}','edit'] class='glyphicon glyphicon-remove clickable pull-right' jq-run='tooltip' title='Deassign this cluster' ng-click="deasociate_cluster(c, stack, $index)"></i>
+      </div>
+
+      <div permission=['groupings','{{stack.uuid}}','edit'] class="btn-group pull-right" style='margin-top: 5px'>
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+          <span translate>Assign Cluster</span>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li ng-repeat="c in clusters | hash2array | orderBy: 'name'">
+            <a ng-if='stack.elements.indexOf(c.uuid) < 0' ng-click="asociate_cluster(c, stack)">{{c.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div ng-if='(clusters|hash2array).length > 0'>
+  <div style='clear: both;'>
+    <h3 style='display: inline' translate>Clusters and VMs</h3>
+    <i class='glyphicon glyphicon-refresh text text-muted clickable' ng-click="getData()"></i>
+  </div>
+
+  <!-- Cluster's container -->
+  <div>
+    <div class="panel panel-warning pull-left" style='width: 250px; min-height: 240px; margin: 10px' ng-repeat="cluster in clusters | hash2array | orderBy: 'name'">
+
+      <div class="panel-heading">
+        {{cluster.name}}
+        <i permission=['groupings','{{cluster.uuid}}','delete'] class='glyphicon glyphicon-trash pull-right clickable'
+        ng-click='delete_grouping(cluster)' jq-run='tooltip' title='Delete this cluster' bs-modal="'views/partials/modal-confirm.html'"></i>
+      </div>
+
+      <div class='panel-body'>
+
+        <div class='text text-muted center' style='margin-bottom: 10px'>
+          <span>Used in {{cluster.groupings.length || 'no'}} stacks and {{cluster._vms.length || 'no'}} vms</span>
+        </div>
+
+        <div class='well well-sm' ng-repeat='vm in cluster._vms' style='margin-bottom: 6px;'>
+          {{vm.config.alias || vm.uuid}}
+          <span class='text text-muted text-right' ng-if="vm.state!='running'">({{vm.state}})</span>
+          <i permission=['groupings','{{stack.uuid}}','edit'] class='glyphicon glyphicon-remove clickable pull-right' jq-run='tooltip' title='Deassign this vm' ng-click="remove_vm(cluster, vm, $index)"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
+

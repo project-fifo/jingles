@@ -1,7 +1,7 @@
-<div class="tab-pane" ng-show='group.uuid'>
+<div class="tab-pane" ng-show='role.uuid'>
   <div class="row-fluid">
     <div class="col-md-8">
-      <h3>{{group.name}}</h3>
+      <h3>{{role.name}}</h3>
     </div>
     <div class='col-md-4'>
       <div class="btn-toolbar btn-group pull-right">
@@ -27,23 +27,24 @@
     <div class="tab-content">
       <div class="tab-pane active" id="details">
         <table class='table table-bordered'>
-          <tr><th translate>Name</th><td><b>{{group.name}}</b></td></tr>
-          <tr><th translate>UUID</th><td><b>{{group.uuid}}</b></td></tr>
+          <tr><th translate>Name</th><td><b>{{role.name}}</b></td></tr>
+          <tr><th translate>UUID</th><td><b>{{role.uuid}}</b></td></tr>
         </table>
       </div>
       <div class="tab-pane" id="permisisons">
         <select ng-model="perm1" ng-change="perm_change(1)">
           <option value="..." translate>Everything</option>
-          <option value="cloud" translate>Cloud</option>
           <option value="channels" translate>Channels</option>
+          <option value="cloud" translate>Cloud</option>
           <option value="datasets" translate>Datasets</option>
           <option value="dtraces" translate>DTrace</option>
-          <option value="groups" translate>Groups</option>
-          <option value="hypervisors" translate>Servers</option>
+          <option value="groupings" translate>Groupings</option>
+          <option value="hypervisors" translate>Hypervisors</option>
           <option value="ipranges" translate>IP Ranges</option>
           <option value="networks" translate>Networks</option>
           <option value="orgs" translate>Organizations</option>
           <option value="packages" translate>Packages</option>
+          <option value="roles" translate>Roles</option>
           <option value="users" translate>Users</option>
           <option value="vms" translate>Virtual Machines</option>
         </select>

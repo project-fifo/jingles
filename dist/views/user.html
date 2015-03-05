@@ -24,7 +24,7 @@
     <ul class="nav nav-tabs">
       <li class="active"><a href="#details" data-toggle="tab" translate>Details</a></li>
       <li><a href="#permisisons" data-toggle="tab" translate>Permissions</a></li>
-      <li><a href="#groups" data-toggle="tab" translate>Groups</a></li>
+      <li><a href="#roles" data-toggle="tab" translate>Roles</a></li>
       <li><a href="#orgs" data-toggle="tab" translate>Organization</a></li>
       <li><a href="#ssh_keys" data-toggle="tab"translate>SSH Keys</a></li>
       <li><a href="#yubikeys" data-toggle="tab"translate>Yubikeys</a></li>
@@ -66,16 +66,17 @@
       <div class="tab-pane" id="permisisons">
         <select ng-model="perm1" ng-change="perm_change(1)">
           <option value="..." translate>Everything</option>
-          <option value="cloud" translate>Cloud</option>
           <option value="channels" translate>Channels</option>
+          <option value="cloud" translate>Cloud</option>
           <option value="datasets" translate>Datasets</option>
           <option value="dtraces" translate>DTrace</option>
-          <option value="groups" translate>Groups</option>
+          <option value="groupings" translate>Groupings</option>
           <option value="hypervisors" translate>Hypervisors</option>
           <option value="ipranges" translate>IP Ranges</option>
           <option value="networks" translate>Networks</option>
           <option value="orgs" translate>Organizations</option>
           <option value="packages" translate>Packages</option>
+          <option value="roles" translate>Roles</option>
           <option value="users" translate>Users</option>
           <option value="vms" translate>Virtual Machines</option>
         </select>
@@ -100,21 +101,21 @@
         </table>
       </div>
 
-      <div class="tab-pane" id="groups">
-        <select id="join_group" ng-model='group'>
-          <option ng-repeat="group in groups | hash2array | orderBy: name" value="{{group.uuid}}">{{group.name}}</option>
+      <div class="tab-pane" id="roles">
+        <select id="join_role" ng-model='role'>
+          <option ng-repeat="role in roles | hash2array | orderBy: name" value="{{role.uuid}}">{{role.name}}</option>
         </select>
-        <button ng-click="group_join()" class='btn btn-default'>Join</button>
+        <button ng-click="role_join()" class='btn btn-default'>Join</button>
         <table class='table table-condensed table-bordered'>
           <tr>
             <th translate>Name</th>
             <th translate>UUID</th>
             <th translate>Actions</th>
           </tr>
-          <tr ng-repeat="group in user._groups">
-            <td><span ng-class="{'text-danger': group.deleted}">{{group.name}}</span></td>
-            <td>{{group.uuid}}</td>
-            <td><a ng-click="leave_group(group.uuid)" translate>delete</a></td>
+          <tr ng-repeat="role in user._roles">
+            <td><span ng-class="{'text-danger': role.deleted}">{{role.name}}</span></td>
+            <td>{{role.uuid}}</td>
+            <td><a ng-click="leave_role(role.uuid)" translate>delete</a></td>
           </tr>
         </table>
       </div>

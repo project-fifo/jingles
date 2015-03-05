@@ -2,11 +2,20 @@
     <div class="alert alert-info">
       <span translate>Create a</span>
       <strong>{{selectedPackage.name}}</strong>
-      <span translate>machine</span> 
+      <span translate>machine</span>
       <strong>{{selectedDataset.name && ('with ' | translate) + selectedDataset.name}}</strong>
-      <span translate>called</span>: 
+      <span translate>called</span>:
       <input class='input-large' style='margin-left: 8px;' type=text ng-model='alias' autofocus>
-        <button class='btn btn-success pull-right' ng-disabled='!(alias && selectedDataset && selectedPackage && rules !== false)' ng-click='create_machine()' translate>Create</button>
+
+      <div class='pull-right'>
+
+	      <!-- <span ng-show="working == 'good'" class="label label-success" title='Good to go' jq-run='tooltip'>Ok</span> -->
+	      <span ng-show="working == 'bad'" class="label label-warning" title='Creation could fail' jq-run='tooltip'>Could fail</span>
+	      <span ng-show="working == 'data-missing'" class="label label-warning" title='Some data is missing' jq-run='tooltip'>Data missing</span>
+	      <span ng-show="working == 'pending'" class="label label-default" title='Searching for problems' jq-run='tooltip'>Testing</span>
+
+		  <button class='btn btn-success' ng-disabled='!(alias && selectedDataset && selectedPackage && rules !== false)' ng-click='create_machine()' translate>Create</button>
+      </div>
     </div>
   </div>
 
@@ -25,7 +34,7 @@
             ng-repeat="d in datasets | filter:{imported: 1} | orderBy: ['-os', 'name', '-version']"
             ng-click='click_dataset(d)'
             ng-show='showAllVersions || latestDatasets[d.name] == d.version'
-            ng-class="selectedDataset.dataset==d.dataset && 'success'">
+            ng-class="selectedDataset.uuid==d.uuid && 'success'">
           <td><img jq-run='tooltip' ng-src="images/logos/{{d.os || 'unknown'}}.png" class='oslogo' /></td>
           <td class="nowrap {{latestDatasets[d.name] == d.version && 'strong' || ''}}" title='{{d.description}}' jq-run='tooltip' jq-options="{container: 'body'}">{{d.name}}</td>
           <td>{{d.version}}</td>
@@ -82,10 +91,8 @@
       <div class="accordion-group">
 
         <a class="accordion-toggle" data-toggle='collapse' href='#togglePasswords' translate>Passwords</a>
-        
         <div id="togglePasswords">
           <div class="accordion-inner">
-          
             <span ng-hide='user.keys'>You dont have any SSH keys. <a href='#/configuration/users/{{user.uuid}}'>Add one</a> or specify the passwords below</span>
 
             <table class="table table-hover small">
@@ -99,6 +106,30 @@
         </div>
       </div>
   </div>
+  </div>
+
+  <div class="col-md-6 accordion">
+    <div class="thumbnail">
+      <div class="accordion-group">
+
+        <a class="accordion-toggle" data-toggle='collapse' href='#toggleClusters' translate>Clusters</a>
+        <div id="toggleClusters" class="collapse">
+          <div class="accordion-inner">
+            <button class="btn btn-success pull-right small" ng-click="add_cluster()">+</button>
+            <table class="table table-hover small">
+              <tr class='small'>
+                <th translate>Cluster</th>
+                <th translate>VMs</th>
+              </tr>
+              <tr class='clickable' ng-repeat="c in clusters | orderBy: 'name'" ng-click='click_cluster(c)' ng-class="selectedCluster.uuid==c.uuid && 'success'">
+                <td><strong>{{c.name}}</strong></td>
+                <td>{{c.elements.length}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="col-md-6">

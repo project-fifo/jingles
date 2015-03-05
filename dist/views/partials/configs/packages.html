@@ -6,27 +6,16 @@
   </div>
   <div class="row-fluid">
     <div class="col-md-12">
-      <table class="table table-condensed table-hover">
-        <thead>
-          <tr>
-            <th translate>Name</th>
-            <th translate>Ram</th>
-            <th translate>Disk</th>
-            <th translate>CPU Cap</th>
-            <th class="span1" translate>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="pack in packages | filter:searchQuery | orderBy: ['ram', 'name']">
-            <td><a href="#/configuration/packages/{{pack.uuid}}">{{pack.name}}</a></td>
-            <td>{{pack.ram | Mbytes}}</td>
-            <td>{{pack.quota | Gbytes}}</td>
-            <td>{{pack.cpu_cap}}</td>
+      <table class="table table-condensed table-hover" ng-show='list.length' ng-table="tableParams">
+          <tr ng-repeat="pack in list">
+            <td data-title="'Name'|translate" sortable="'name'"><a href="#/configuration/packages/{{pack.uuid}}">{{pack.name}}</a></td>
+            <td data-title="'Ram'|translate" sortable="'ram'">{{pack.ram | Mbytes}}</td>
+            <td data-title="'Disk'|translate" sortable="'quota'">{{pack.quota | Gbytes}}</td>
+            <td data-title="'CPU Cap'|translate" sortable="'cpu_cap'">{{pack.cpu_cap}}</td>
             <td>
               <i ng-click="delete(pack)" jq-run='tooltip' title="Delete" class="glyphicon glyphicon-remove clickable" bs-modal="'views/partials/modal-confirm.html'"></i>
             </td>
           </tr>
-        </tbody>
       </table>
     </div>
   </div>

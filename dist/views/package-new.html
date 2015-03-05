@@ -1,5 +1,5 @@
   <div class="col-md-12 alert alert-info">
-    <span translate>Create a package called</span>: 
+    <span translate>Create a package called</span>:
     <input class='span6' style='margin-left: 8px;' type=text ng-model='name' autofocus>
     <button class='btn btn-success pull-right' ng-disabled='form.$invalid || !name' ng-click='create_package()' translate>Create</button>
   </div>
@@ -20,12 +20,34 @@
         <span class="input-group-addon" style='max-width: 40px'>MB</span>
       </div>
       <div class="input-group">
-        <input class='form-control' placeholder="Disk" type="number" min="0" ng-model='quota' required>
+        <input class='form-control' placeholder="Disk" type="number" min="0" ng-model='quota' required/>
         <span class="input-group-addon" style='max-width: 40px'>GB</span>
       </div>
       <div class="input-group">
-        <input class='form-control' placeholder="IO Priority" type="number" min="0" ng-model='io' required>
+        <input class='form-control' placeholder="IO Priority" type="number" min="0" ng-model="io">
         <span class="input-group-addon" style='max-width: 40px'>IO</span>
+      </div>
+      <div class="input-group">
+        <input class='form-control' placeholder="Block Size(KMV)" type="number" min="1024" ng-model="block_size">
+        <span class="input-group-addon" style='max-width: 40px'>BS</span>
+      </div>
+      <div class="input-group">
+        <select class="form-control" ng-model="compression">
+          <option selected="true" value="none">none</option>
+          <option value="lz4">lz4</option>
+          <option value="lzjb">lzjb</option>
+          <option value="zle">zle</option>
+          <option value="gzip">gzip</option>
+          <option value="gzip-1">gzip-1</option>
+          <option value="gzip-2">gzip-2</option>
+          <option value="gzip-3">gzip-3</option>
+          <option value="gzip-4">gzip-4</option>
+          <option value="gzip-5">gzip-5</option>
+          <option value="gzip-6">gzip-6</option>
+          <option value="gzip-7">gzip-7</option>
+          <option value="gzip-8">gzip-8</option>
+          <option value="gzip-9">gzip-9</option>
+        </select>
       </div>
     </form>
   </div>
@@ -34,7 +56,7 @@
     <rule ng-model='rules'/>
   </div>
   <div class='container row'>
-    The rules are optional, they help FiFo decide wich hypervisor to use. <a href="http://project-fifo.net/display/PF/Hypervisor+Requirements" target=_blank>More info</a>
+    The rules are optional, they help FiFo decide wich hypervisor to use. <a href="https://project-fifo.net/display/PF/Hypervisor+Requirements" target=_blank>More info</a>
     <br/>
     IO Priority is optional
   </div>

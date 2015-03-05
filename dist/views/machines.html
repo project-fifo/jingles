@@ -1,3 +1,8 @@
+<div class="center alert alert-warning alert-dismissible" role="alert" ng-if="cloudStatus.metrics.vms && vms.length && cloudStatus.metrics.vms - vms.length != 0">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  <span translate>There is a change in the machines count. Click</span> <a href='javascript:void(0)' class='alert-link' ng-click='loadVms()' translate>here</a> <span translate>to update this page</span>
+</div>
+
 <ul class="list-inline pull-right col-md-6 col-sm-12 col-xs-12">
   <li class='col-md-8 col-sm-9 col-xs-7'>
     <input type="text" class="form-control" placeholder="{{'Filter'|translate}}" ng-model='searchQuery'>
@@ -7,12 +12,18 @@
   </li>
 </ul>
 
-<span class='well-sm text-muted visible-lg visible-md' style='text-align: right; padding-bottom: 14px;'>
-  <span ng-show='searchQuery' translate>Showing </span>
-  <span ng-show='searchQuery'> {{ (vmsFiltered).length}} </span>
-  <span  ng-show='searchQuery'translate>of </span>
-  <span> {{vms.length}} </span>
-  <span translate>Machines</span>
+<span class='well-sm visible-lg visible-md' style='text-align: right; padding-bottom: 14px;'>
+  <span style='padding-right: 30px; text-align: left;' ng-if='legend.length > 1'>
+    <span ng-repeat="l in legend" class='capitalize label label-{{l._state_label}}' style='margin-right: 3px;'>{{l.count}} {{l.state}}</span>
+  </span>
+  <span class='text-muted'>
+    <span ng-show='searchQuery' translate>Showing </span>
+    <span ng-show='searchQuery'> {{ (vmsFiltered).length}} </span>
+    <span  ng-show='searchQuery'translate>of </span>
+    <span> {{vms.length}} </span>
+    <span translate>Machines</span>
+  </span>
+
 </span>
 
 <div class="table-responsive">
@@ -45,8 +56,11 @@
       <td ng-show="auth.canAccess(['cloud','hypervisors','list'])" data-title="'Server'|translate" sortable="'hypervisor'" class='fifo-visible-lg fifo-visible-md'>
         <a class='nocolor' href="#/servers/{{vm.hypervisor}}">{{vm._hypervisor.alias}}</a>
       </td>
-      <td ng-show="auth.canAccess(['cloud','groups','list'])" class='text-muted fifo-visible-lg fifo-visible-md' data-title="'Owner'|translate" sortable="'_owner.name'">
+      <td ng-show="auth.canAccess(['cloud','orgs','list'])" class='text-muted fifo-visible-lg fifo-visible-md' data-title="'Owner'|translate" sortable="'_owner.name'">
         <a class="nocolor" href="#/configuration/organizations/{{vm.owner}}">{{vm._owner.name}}</a>
+      </td>
+      <td ng-show="auth.canAccess(['cloud','groupings','list'])" class='text-muted fifo-visible-lg fifo-visible-md' data-title="'Cluster'|translate" sortable="'grouping'">
+        <a class="nocolor" href="#/configuration/organizations/{{vm.owner}}">{{vm._grouping.name}}</a>
       </td>
       <td data-title="'Created' | translate" class='text-muted visible-lg' sortable="'config.created_at'" am-time-ago="vm.config.created_at" title="{{vm.config.created_at | date:'mediumDate'}}"></td>
 
@@ -56,8 +70,8 @@
 
       <!-- Actions: -->
       <td class='hidden-xs'>
-        <i ng-show="vm.state == 'running'" jq-run='tooltip' class='glyphicon glyphicon-sound-dolby clickable' title='Connect' ng-click='connect(vm)' permission=['vms','{{vm.uuid}}','console']></i>
-        <i ng-hide="vm.state.indexOf('stopped') < 0" ng-click="start(this.vm)" jq-run='tooltip' class='glyphicon glyphicon-play clickable' title='Start' permission=['vms','{{vm.uuid}}','state']></i>
+        <i ng-show="vm.state == 'running'" jq-run='tooltip' class='glyphicon glyphicon-sound-dolby clickable' title='Connect' aria-label="Connect" ng-click='connect(vm)' permission=['vms','{{vm.uuid}}','console']></i>
+        <i ng-hide="vm.state.indexOf('stopped') < 0" ng-click="start(this.vm)" jq-run='tooltip' class='glyphicon glyphicon-play clickable' title='Start' aria-label="Start {{vm.name}}" permission=['vms','{{vm.uuid}}','state']></i>
       </td>
     </tr>
   </table>

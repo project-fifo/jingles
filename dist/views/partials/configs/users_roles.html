@@ -4,16 +4,16 @@
   </div>
   <div class="row-fluid">
     <div class="span12">
-      <table class="table table-condensed table-hover">
+      <table class="table table-condensed table-hover" ng-show='users.length'>
         <thead>
           <tr>
-            <th translate>Name</th>
+            <th translate>User</th>
             <th translate>Roles</th>
             <th translate>Organizations</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat='u in users | filter:searchQuery'>
+          <tr ng-repeat="u in users | filter:searchQuery | orderBy:'name'" ng-mouseover="$parent.highlight=u.roles">
             <td><a href="#/configuration/users/{{u.uuid}}">{{u.name}}</a></td>
             <td>
               <a style='padding-right: 5px' class='nocolor' ng-repeat='g in u._roles' href="#/configuration/roles/{{g.uuid}}">
@@ -33,23 +33,25 @@
 </div>
 
 
-<div class="tab-pane" id="groups">
+<div class="tab-pane" id="roles">
   <div class="pane-nav">
-    <a href="#/configuration/groups/new" class="btn btn-primary" permission=['cloud','groups','create']>
-      <span translate>New Group</span>
+    <a href="#/configuration/roles/new" class="btn btn-primary" permission=['cloud','roles','create']>
+      <span translate>New Role</span>
     </a>
   </div>
   <div class="row-fluid">
     <div class="span12">
-      <table class="table table-condensed table-hover">
+      <table class="table table-condensed table-hover" ng-show='roles.length'>
         <thead>
           <tr>
             <th translate>Role</th>
+            <th translate>Permissions</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="g in groups | filter:searchQuery">
-            <td><a ng-href="#/configuration/groups/{{g.uuid}}">{{g.name}}</a></td>
+          <tr ng-repeat="g in roles | filter:searchQuery | orderBy:'name'" ng-class="{'warning': highlight.indexOf(g.uuid) > -1}">
+            <td><a ng-href="#/configuration/roles/{{g.uuid}}">{{g.name}}</a></td>
+            <td>{{g.permissions.length}}</td>
           </tr>
         </tbody>
       </table>

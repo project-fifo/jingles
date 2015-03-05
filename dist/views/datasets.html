@@ -5,51 +5,53 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#installed" data-toggle="tab" translate>Installed</a></li>
           <li><a href="#datasetsat" data-toggle="tab" translate>Remote datasets</a></li>
-          <li><a href="#upload" data-toggle="tab" translate>Upload</a></li>
+          <!-- <li><a href="#upload" data-toggle="tab" translate>Upload</a></li> -->
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="installed">
-            <div class="row-fluid table-responsive">
-              <table class="table table-condensed table-hover">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th translate>Name</th>
-                    <th translate>Description</th>
-                    <th translate>Status</th>
-                    <th translate>Type</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="data in datasets | hash2array | orderBy: ['-os', 'name','-version']">
-                    <td><img title='{{data.os}}' jq-run='tooltip' class='oslogo' ng-src="images/logos/{{data.os || 'unknown'}}.svg" onerror='this.src="images/logos/unknown.svg"'></td>
 
-                    <td><a href='#/datasets/{{data.dataset}}' title='{{data.dataset}}' jq-run='tooltip'>{{data.name}} {{data.version && '(' + data.version + ')'}}</a></td>
+            <div class="alert alert-info" ng-if='datasets && (datasets|hash2array).length === 0'><span translate>Please import a dataset using the 'Remote datasets' tab.</span></div>
+            <table class="table table-condensed table-hover" ng-if='(datasets|hash2array).length !== 0'>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th translate>Name</th>
+                  <th translate>Description</th>
+                  <th style= translate>Status</th>
+                  <th translate>Type</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="data in datasets | hash2array | orderBy: ['-os', 'name','-version']">
+                  <td width='1%'><img title='{{data.os}}' jq-run='tooltip' class='oslogo' ng-src="images/logos/{{data.os || 'unknown'}}.svg" onerror='this.src="images/logos/unknown.svg"'></td>
 
-                    <td class='describe'>
-                      <a ng-href='{{data.homepage}}' ng-if='data.homepage' target=_blank><i class='glyphicon glyphicon-info-sign'></i></a> 
-                      <span>{{data.description}}</span>
-                    </td>
+                  <td width='20%'><a href='#/datasets/{{data.uuid}}' title='{{data.uuid}}' jq-run='tooltip'>{{data.name}} {{data.version && '(' + data.version + ')'}}</a></td>
 
-                    <td class='nowrap'>
-                      <span class='label' ng-class="{'label-warning': data.status=='importing' || data.status=='pending', 'label-danger': data.status=='failed', 'label-success': data.status=='imported'}">{{data.status}}</span> 
-                      <small class='text-muted' ng-show="data.imported < 1"> {{(data.imported * 100).toFixed(1)}}%</small>
+                  <td class='describe'>
+                    <a ng-href='{{data.metadata.homepage}}' ng-if='data.metadata.homepage' target=_blank><i class='glyphicon glyphicon-info-sign'></i></a>
+                    <span>{{data.description}}</span>
+                  </td>
 
-                    </td>
-                    <td class='light'>{{data.type}}</td>
-                    <td >
-                      <i permission=['datasets','{{data.dataset}}','delete'] ng-show="data.status=='imported'" ng-click="delete(data)" jq-run="tooltip" class="glyphicon glyphicon-remove-sign clickable" title="Delete" bs-modal="'views/partials/modal-confirm.html'"></i>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                  <td class='nowrap' width='1%'>
+                    <span class='label' ng-class="{'label-warning': data.status=='importing' || data.status=='pending', 'label-danger': data.status=='failed', 'label-success': data.status=='imported'}">{{data.status}}</span>
+                    <small class='text-muted' ng-show="data.imported < 1"> {{(data.imported * 100).toFixed(1)}}%</small>
+
+                  </td>
+                  <td class='light' width='1%'>{{data.type}}</td>
+                  <td width='1%'>
+                    <i permission=['datasets','{{data.uuid}}','delete'] ng-show="data.status=='imported' || data.status=='failed'" ng-click="delete(data)" jq-run="tooltip" class="glyphicon glyphicon-remove-sign clickable" title="Delete" bs-modal="'views/partials/modal-confirm.html'"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
           </div>
           <div class="tab-pane table-responsive" id="datasetsat">
             <div class='pane-nav'>
-              Datasets are hosted and managed by <a href="http://{{endpoint}}">{{endpoint}}</a>
+              Datasets are hosted and managed by <a ng-href="{{endpoint}}">{{endpoint}}</a>
             </div>
+            <div ng-if='no_s3' class='text-center alert alert-info'>The internal image storage is deprecated. Please <a href='https://docs.project-fifo.net/en/stable/general/installation.html#leofs'>setup</a> an S3 backend for storing datasets.</div>
             <h4 ng-if='loadingRemoteDatasets' class='text-center text-muted'>Loading...</h4>
             <table class="table table-condensed table-hover" ng-if='loadingRemoteDatasets == false'>
               <thead>
@@ -65,22 +67,22 @@
               </thead>
               <tbody>
                 <tr ng-repeat="data in datasetsat | hash2array | orderBy: ['-published_at', '-os', 'name','-version']">
-                  <td><img title='{{data.os}}' jq-run='tooltip' class='oslogo' ng-src="images/logos/{{data.os || 'unknown'}}.svg" onerror='this.src="images/logos/unknown.svg"'></td>
-                  <td><span title='{{data.uuid}}' jq-run='tooltip'>{{data.name}} {{data.version && '(' + data.version + ')'}}</span></td>
+                  <td width='1%'><img title='{{data.os}}' jq-run='tooltip' class='oslogo' ng-src="images/logos/{{data.os || 'unknown'}}.svg" onerror='this.src="images/logos/unknown.svg"'></td>
+                  <td width='20%'><span title='{{data.uuid}}' jq-run='tooltip'>{{data.name}} {{data.version && '(' + data.version + ')'}}</span></td>
                   <td class='describe'>{{data.description}}</td>
-                  <td>
+                  <td width='1%'>
                     <i ng-show="data.imported" class="glyphicon glyphicon-ok"></i>
                     <button class='btn btn-default btn-sm'
                             ng-hide="data.imported == 1"
                             ng-click='import(data.uuid)'
                             permission=['cloud','datasets','import']>
-                            <i class='glyphicon glyphicon-download-alt'></i>
-                            <span translate>Import</span>
+                      <i class='glyphicon glyphicon-download-alt'></i>
+                      <span translate>Import</span>
                     </button>
                   </td>
-                  <td><span title="{{data.published_at | date:'medium'}}" jq-run='tooltip' am-time-ago='data.published_at' class='nowrap'></span></td>
-                  <td class='light nowrap'>{{data.files[0].size|bytes}}</td>
-                  <td class='light' style='max-width: 80px;'>
+                  <td width='1%'><span title="{{data.published_at | date:'medium'}}" jq-run='tooltip' am-time-ago='data.published_at' class='nowrap'></span></td>
+                  <td class='light nowrap' width='1%'>{{data.files[0].size|bytes}}</td>
+                  <td class='light' style='max-width: 80px;' width='1%'>
                     <a ng-href='{{data.homepage}}' ng-if='data.homepage' target=_blank><i class='glyphicon glyphicon-info-sign'></i></a>
                     <small>{{data.creator_name}}</small>
                   </td>
@@ -103,57 +105,57 @@
               <div class='col-sm-6' style='margin-top: 20px;'><input ng-file-select='onFileSelect($files)' type="file"/></div>
             </div>
 
-            <pre style='white-space: pre-wrap' class='pre-scrollable' ng-if='manifest'>{{manifest}}</pre>   
-    
+            <pre style='white-space: pre-wrap' class='pre-scrollable' ng-if='manifest'>{{manifest}}</pre>
+
             <div class='upload' ng-if='uploader.queue.length'>
               <table class="table table-condensed table-hover">
                 <thead>
-                    <tr>
-                        <th width="50%">Name</th>
-                        <th ng-show="uploader.isHTML5">Size</th>
-                        <th ng-show="uploader.isHTML5">Progress</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
+                  <tr>
+                    <th width="50%">Name</th>
+                    <th ng-show="uploader.isHTML5">Size</th>
+                    <th ng-show="uploader.isHTML5">Progress</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="item in uploader.queue">
-                        <td><strong>{{ item.file.name }}</strong></td>
-                        <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                        <td ng-show="uploader.isHTML5">
-                            <div class="progress" style="margin-bottom: 0;">
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                            <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                            <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
-                        </td>
-                        <td nowrap>
-                              <span class="glyphicon glyphicon-trash" title='Remove' jq-run='tooltip' ng-click="item.remove()"></span>
-                        </td>
-                    </tr>
+                  <tr ng-repeat="item in uploader.queue">
+                    <td><strong>{{ item.file.name }}</strong></td>
+                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                    <td ng-show="uploader.isHTML5">
+                      <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                      <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                      <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    </td>
+                    <td nowrap>
+                      <span class="glyphicon glyphicon-trash" title='Remove' jq-run='tooltip' ng-click="item.remove()"></span>
+                    </td>
+                  </tr>
                 </tbody>
-            </table>
+              </table>
 
-            <div>
+              <div>
                 <div class='pull-right'>
-                  <button type="button" class="btn btn-default btn-s" 
-                    ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-                      <span class="glyphicon glyphicon-upload"></span> Upload
+                  <button type="button" class="btn btn-default btn-s"
+                          ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                    <span class="glyphicon glyphicon-upload"></span> Upload
                   </button>
-                  <button type="button" class="btn btn-default btn-s" 
-                    ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-                      <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                  <button type="button" class="btn btn-default btn-s"
+                          ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                   </button>
-                  <button type="button" class="btn btn-default btn-s" 
-                    ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-                      <span class="glyphicon glyphicon-trash"></span> Clear
+                  <button type="button" class="btn btn-default btn-s"
+                          ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                    <span class="glyphicon glyphicon-trash"></span> Clear
                   </button>
                 </div>
+              </div>
             </div>
-          </div>
 
 
           </div>

@@ -6,7 +6,7 @@
   </div>
   <div class="row-fluid">
     <div class="span12">
-      <table class="table table-condensed table-hover">
+      <table class="table table-condensed table-hover" ng-show='dtraces.length'>
         <thead>
           <tr>
             <th translate>Name</th>
@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="dt in dtraces | filter:searchQuery">
+          <tr ng-repeat="dt in dtraces | filter:searchQuery | orderBy:'name'">
             <td><strong><a href="#/configuration/dtraces/{{dt.uuid}}">{{dt.name}}</a></strong></td>
             <td>{{dt.uuid}}</td>
             <td>
