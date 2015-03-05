@@ -334,7 +334,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                         }
                                        }}
                                      });
-        services.datasets = $resource(endpoint + 'datasets/:id',
+        services.datasets = $resource(endpoint + 'datasets/:id/:i_fucking_hate_angular',
                                       {id: '@id'},
                                       {import: {method: 'POST', headers: withToken()},
                                        get: {method: 'GET', cache: $cacheFactory.get('datasets'), headers: withToken()},
