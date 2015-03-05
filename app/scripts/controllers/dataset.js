@@ -12,7 +12,7 @@ angular.module('fifoApp')
 
     $scope.save = function(nets) {
       wiggle.datasets.put({id: uuid, i_fucking_hate_angular: 'networks'},
-                          {networks: nets},
+                          nets,
                           function success(res) {
                             status.success('Dataset changed')
                           },
