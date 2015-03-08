@@ -2,7 +2,8 @@ VERSION=0.6.2
 COMPONENT=fifo-jingles
 DEPS="nginx>=1.3.13"
 
-.PHONY: build_info package package_list
+include pkg.mk
+.PHONY: package prepare clean
 
 package: prepare $(FILE).tgz
 
