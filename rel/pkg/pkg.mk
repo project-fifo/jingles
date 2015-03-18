@@ -1,4 +1,4 @@
-TARGET_DIR ?=/opt/local/$(COMPONENT)
+TARGET_DIR ?=/opt/local
 FILE ?=$(COMPONENT)-$(VERSION)$(SUFFIX)
 BLOCK_SIZE ?=65536
 STAGE_DIR ?=deploy
