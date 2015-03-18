@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+AWK=/usr/bin/awk
+SED=/usr/bin/sed
+
 USER=jingles
 GROUP=www
 DOMAIN="project-fifo.net"
@@ -22,9 +25,9 @@ case $2 in
 
             if ifconfig net1 > /dev/null 2>&1
             then
-                IP=`ifconfig net1 | grep inet | awk -e '{print $2}'`
+                IP=`ifconfig net1 | grep inet | $AWK '{print $2}'`
             else
-                IP=`ifconfig net0 | grep inet | awk -e '{print $2}'`
+                IP=`ifconfig net0 | grep inet | $AWK '{print $2}'`
             fi
             SUBJ="
 C=AU
@@ -75,6 +78,5 @@ emailAddress=blah@blah.com
         then
             cp /opt/local/fifo-jingles/dist/scripts/config.js.example /opt/local/fifo-jingles/dist/scripts/config.js
         fi
-        #sed --in-place=.bak -e "s/127.0.0.1/${IP}/g" /opt/local/wiggle-ui/htdocs/js/config.js
         ;;
 esac
