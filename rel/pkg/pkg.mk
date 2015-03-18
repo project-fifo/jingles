@@ -49,5 +49,5 @@ endif
 
 +PKG_GPG_SIGNATURE: +PKG_HASH
 	-rm +PKG_GPG_SIGNATURE
-	gpg --default-key $(GPG_KEY) -o +PKG_GPG_SIGNATURE --detach-sign +PKG_HASH
+	gpg --default-key $(GPG_KEY) -o +PKG_GPG_SIGNATURE --detach-sign --armor +PKG_HASH
 
