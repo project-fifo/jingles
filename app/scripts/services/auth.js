@@ -32,8 +32,8 @@ angular.module('fifoApp')
         var perms = user.permissions || []
 
         //Add the roles permissions
-        Object.keys(user._roles).forEach(function(k) {
-          perms = perms.concat(user._roles[k].permissions)
+        Object.keys(user.roles).forEach(function(k) {
+          perms = perms.concat(user.roles[k].permissions)
         })
 
         for (var i=0; i<perms.length; i++) {
@@ -61,34 +61,65 @@ angular.module('fifoApp')
             o.otp = _otp
         }
 
+        window.token = null
 
+
+        wiggle.currentsession.login(null, $.param(o)).$promise.then(
+
+          
+          function success(token) {
+          //  console.log( 'token', token)
+          //  console.log('setting snarl token')
+            window.token = token.access_token
+         //  $.cookie('x-snarl-token', token.access_token)
             /* Create a user object based on the sessionData, so later we can use loggedUser.mdata_set */
-            user.keys = user.keys || []
-            user.roles = user.roles || []
+            console.log('rootscope ', window.token)
+
+            wiggle.sessions.get().$promise.then(
+
+              function success(res){
+                console.log('...')
+                
+
+                user = new wiggle.users(res)
+                user.keys = user.keys || []
+                user.roles = user.roles || []
 
 
+                //setTimeout(function(){ $rootScope.$broadcast('auth:login_ok', user, token) }, 3000);
+                $rootScope.$broadcast('auth:login_ok', user, window.token)
+                $location.path('/')
+              },
+              function error(res) {
+                //could not fetch session, pass anyways...
+                $location.path('/')
+                $rootScope.$broadcast('auth:login_ok', user, window.token)
+              //  $rootScope.$broadcast('auth:login_error', {'status' : 'Could Not Login'})
+              }
+            )
 
-            $location.path('/')
+            //$location.path('/')
           },
 
           function error(res) {
-            $rootScope.$broadcast('auth:login_error', res)
+            $rootScope.$broadcast('auth:login_error', {'status' : 'Could Not Login'})
           }
 
         )
       },
 
       logout: function() {
-        user = null;
+        user = null
 
-        var token = $cookies["x-snarl-token"]
-        if (token) {
-          delete $cookies["x-snarl-token"]
+        console.log('logout requested')
+        window.token = null
 
-        }
+        //$.cookie('x-snarl-token', '')
+       
 
         $rootScope.$broadcast('auth:logout')
         $location.path('/login')
+      // window.location = "/#/login"
         return;
       }
     };
@@ -101,13 +132,12 @@ angular.module('fifoApp')
         //Chances are that session.get takes more time that the first change of route, so set a temporary user object
         user = new wiggle.users({status: 'waiting for login validation'})
 
-        var token = $cookies["x-snarl-token"]
-        // console.log('checkIfLogged', token)
+        var token = window.token
         if (!token)
           return $rootScope.$broadcast('auth:login_needed')
 
         //Check if the current token is valid.
-        wiggle.sessions.get({id: token}).$promise.then(
+        wiggle.sessions.get().$promise.then(
           function ok(res) {
             user = new wiggle.users(res)
             $rootScope.$broadcast('auth:login_ok', user, res.data)
@@ -120,7 +150,6 @@ angular.module('fifoApp')
     $rootScope.$on('$routeChangeSuccess', function(ev, curr, prev) {
       //On first load, prev will be undefined.
 
-      // console.log(prev && prev.$$route.controller, '->', curr.$$route.controller, ev)
       checkIfLogged()
     })
 
@@ -149,7 +178,7 @@ angular.module('fifoApp')
           howl.join(hypers)
         })
 
-        howl.connect($cookies["x-snarl-token"])
+        howl.connect(window.token)
       }
 
     })
