@@ -56,26 +56,18 @@ angular.module('fifoApp')
       },
 
       login: function (_user, _pass, _otp) {
-        var o = {user: _user, password: _pass};
+        var o = {grant_type: "password", username: _user, password: _pass};
         if (_otp) {
             o.otp = _otp
         }
-        wiggle.sessions.login(null, o).$promise.then(
 
-          function success(res) {
 
             /* Create a user object based on the sessionData, so later we can use loggedUser.mdata_set */
-            user = new wiggle.users(res)
             user.keys = user.keys || []
             user.roles = user.roles || []
 
-            // console.log('seteando el cookie...', $cookies, res)
 
-            //We dont want cookies, becouse pointing to a different datacenter requires to change the endpoint, cannot save cookies on different endpoints.
-            //But we will use it anyway to read the value and store it on wiggle headers calls. Localstorage would work also...
-            $cookies["x-snarl-token"] = res.session
 
-            $rootScope.$broadcast('auth:login_ok', user, res.session)
             $location.path('/')
           },
 
@@ -91,7 +83,6 @@ angular.module('fifoApp')
 
         var token = $cookies["x-snarl-token"]
         if (token) {
-          wiggle.sessions.delete({id: token})
           delete $cookies["x-snarl-token"]
 
         }

@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFactory, $q, $cookies) {
+angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFactory, $q) {
 
     var endpoint;
     function setEndpoint(url) {
 
-        var path = '/api/' + (Config.apiVersion || '0.1.0') + '/';
+        var path = '/api/' + (Config.apiVersion || '0.2.0') + '/';
 
         //The port : needs to be escaped to \\:
         if (url.split(':').length>2)
@@ -45,7 +45,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
         */
         ['hypervisors', 'vms'].forEach(function(resource) {
           services[resource].list = function(cb, error) {
-              return $http.get(endpoint + resource)
+              return $http.get(endpoint + resource, {headers: {'Authorization': 'Bearer '  + window.token} })
                   .success(cb)
                   .error(function(data) {
                       error && error(data);
@@ -138,20 +138,28 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
     var controller_layout = '/:id/:controller/:controller_id/:controller_id1/:controller_id2/:controller_id3';
     function setUpServices() {
 
-        var token = $cookies["x-snarl-token"];
-        // console.log('--> setupservices', token)
+      function withToken(h) {
+        h = h || {}
+        var AuthToken = {'Authorization': 'Bearer ' + window.token} 
+        console.log('token scope ', AuthToken)
 
-        //merge other headers with the token one.
-        function withToken(h) {
-          h = h || {}
-          return angular.extend({'x-snarl-token': token}, h)
-        }
+        var res =  angular.extend(AuthToken, h)
+        console.log('res ', res)
+        return res
+      }
 
 
         services.sessions = $resource(endpoint + 'sessions/:id',
                                       {id: '@id'},
-                                      {get: {method: 'GET', interceptor: {response: userInterceptor}, headers: withToken()},
-                                       login: {method: 'POST', interceptor: {response: userInterceptor}}});
+                                      {get: {method: 'GET', headers: withToken()},
+                                       get_first : {method: 'GET', headers: withToken(), interceptor: {response: userInterceptor}}});
+        services.currentsession = $resource(endpoint + 'oauth/token',
+                                      {id: '@id'},
+                                      {login: {
+                                        method: 'POST', 
+                                      //  interceptor: {response: sessionsInterceptor},
+                                        headers : {'Content-Type': 'application/x-www-form-urlencoded', 'Accept' : '*/*'}
+                                      }});
         services.users = $resource(endpoint + 'users' + controller_layout,
                                    {id: '@id',
                                     controller: '@controller',
@@ -268,6 +276,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                     {put: {method: 'PUT', headers: withToken()},
                                      get: {method: 'GET', cache: true, headers: withToken()},
                                      create: {method: 'POST', headers: withToken()},
+                                     save: {method: 'POST', headers: withToken()},
                                      delete: {method: 'DELETE', headers: withToken()},
                                      query: {method: 'GET', isArray: true, headers: withToken({'x-full-list': true})},
                                    });
@@ -334,7 +343,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                         }
                                        }}
                                      });
-        services.datasets = $resource(endpoint + 'datasets/:id/:i_fucking_hate_angular',
+        services.datasets = $resource(endpoint + 'datasets/:id/:not_used',
                                       {id: '@id'},
                                       {import: {method: 'POST', headers: withToken()},
                                        get: {method: 'GET', cache: $cacheFactory.get('datasets'), headers: withToken()},
