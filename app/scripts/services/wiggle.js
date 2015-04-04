@@ -141,10 +141,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
       function withToken(h) {
         h = h || {}
         var AuthToken = {'Authorization': 'Bearer ' + window.token} 
-        console.log('token scope ', AuthToken)
-
         var res =  angular.extend(AuthToken, h)
-        console.log('res ', res)
         return res
       }
 
@@ -155,11 +152,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                        get_first : {method: 'GET', headers: withToken(), interceptor: {response: userInterceptor}}});
         services.currentsession = $resource(endpoint + 'oauth/token',
                                       {id: '@id'},
-                                      {login: {
-                                        method: 'POST', 
-                                      //  interceptor: {response: sessionsInterceptor},
-                                        headers : {'Content-Type': 'application/x-www-form-urlencoded', 'Accept' : '*/*'}
-                                      }});
+                                      {login: { method: 'POST', headers : {'Content-Type': 'application/x-www-form-urlencoded', 'Accept' : '*/*'}}});
         services.users = $resource(endpoint + 'users' + controller_layout,
                                    {id: '@id',
                                     controller: '@controller',

@@ -68,25 +68,15 @@ angular.module('fifoApp')
 
           
           function success(token) {
-          //  console.log( 'token', token)
-          //  console.log('setting snarl token')
             window.token = token.access_token
-         //  $.cookie('x-snarl-token', token.access_token)
-            /* Create a user object based on the sessionData, so later we can use loggedUser.mdata_set */
-            console.log('rootscope ', window.token)
 
+            /* Create a user object based on the sessionData, so later we can use loggedUser.mdata_set */
             wiggle.sessions.get().$promise.then(
 
               function success(res){
-                console.log('...')
-                
-
                 user = new wiggle.users(res)
                 user.keys = user.keys || []
                 user.roles = user.roles || []
-
-
-                //setTimeout(function(){ $rootScope.$broadcast('auth:login_ok', user, token) }, 3000);
                 $rootScope.$broadcast('auth:login_ok', user, window.token)
                 $location.path('/')
               },
@@ -94,11 +84,8 @@ angular.module('fifoApp')
                 //could not fetch session, pass anyways...
                 $location.path('/')
                 $rootScope.$broadcast('auth:login_ok', user, window.token)
-              //  $rootScope.$broadcast('auth:login_error', {'status' : 'Could Not Login'})
               }
             )
-
-            //$location.path('/')
           },
 
           function error(res) {
@@ -111,15 +98,10 @@ angular.module('fifoApp')
       logout: function() {
         user = null
 
-        console.log('logout requested')
         window.token = null
-
-        //$.cookie('x-snarl-token', '')
-       
 
         $rootScope.$broadcast('auth:logout')
         $location.path('/login')
-      // window.location = "/#/login"
         return;
       }
     };
