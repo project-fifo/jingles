@@ -58,7 +58,7 @@ angular.module('fifoApp')
       login: function (_user, _pass, _otp) {
         var o = {grant_type: "password", username: _user, password: _pass};
         if (_otp) {
-            o.otp = _otp
+            o.fifo_otp = _otp
         }
 
         window.token = null
