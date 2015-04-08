@@ -137,6 +137,7 @@ angular.module('fifoApp')
 
     /* Separate the login check from the action taken: listen for auth events and do something */
     $rootScope.$on('auth:login_needed', function() {
+      window.token=""
       if ($location != '/login')
         auth.logout()
     })
