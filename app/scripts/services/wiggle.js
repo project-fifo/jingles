@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFactory, $q, $cookies) {
+angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFactory, $q) {
 
     var endpoint;
     function setEndpoint(url) {
 
-        var path = '/api/' + (Config.apiVersion || '0.1.0') + '/';
+        var path = '/api/' + '0.1.0' + '/';
 
         //The port : needs to be escaped to \\:
         if (url.split(':').length>2)
@@ -21,6 +21,28 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
         Config.wsUrl = Config.wsUrl || tmp.replace(/^http/, "ws");
         Config.apiPath = path;
     }
+
+    var endpoint2;
+    function setEndpoint2(url) {
+
+        var path = '/api/' + '0.2.0' + '/';
+
+        //The port : needs to be escaped to \\:
+        if (url.split(':').length>2)
+            endpoint2 = url.replace(/:([^:]*)$/,'\\:'+'$1') + path;
+        else
+            endpoint2 = url + path;
+
+        setUpServices();
+
+        //Howl endpoint.
+        Config.endpoint2 = endpoint2;
+        var tmp = url || (window.location.protocol + '//' + window.location.host);
+        Config.wsUrl = Config.wsUrl || tmp.replace(/^http/, "ws");
+        Config.apiPath2 = path;
+    }
+
+
 
     var is_empty = function(obj) {
 
@@ -45,7 +67,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
         */
         ['hypervisors', 'vms'].forEach(function(resource) {
           services[resource].list = function(cb, error) {
-              return $http.get(endpoint + resource)
+              return $http.get(endpoint + resource, {headers: {'Authorization': 'Bearer '  + window.localStorage["token"]} })
                   .success(cb)
                   .error(function(data) {
                       error && error(data);
@@ -138,20 +160,21 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
     var controller_layout = '/:id/:controller/:controller_id/:controller_id1/:controller_id2/:controller_id3';
     function setUpServices() {
 
-        var token = $cookies["x-snarl-token"];
-        // console.log('--> setupservices', token)
-
-        //merge other headers with the token one.
-        function withToken(h) {
-          h = h || {}
-          return angular.extend({'x-snarl-token': token}, h)
-        }
+      function withToken(h) {
+        h = h || {}
+        var AuthToken = {'Authorization': 'Bearer ' + window.localStorage["token"]} 
+        var res =  angular.extend(AuthToken, h)
+        return res
+      }
 
 
-        services.sessions = $resource(endpoint + 'sessions/:id',
+        services.sessions = $resource(endpoint2 + 'sessions/:id',
                                       {id: '@id'},
-                                      {get: {method: 'GET', interceptor: {response: userInterceptor}, headers: withToken()},
-                                       login: {method: 'POST', interceptor: {response: userInterceptor}}});
+                                      {get: {method: 'GET', headers: withToken()},
+                                       get_first : {method: 'GET', headers: withToken(), interceptor: {response: userInterceptor}}});
+        services.currentsession = $resource(endpoint2 + 'oauth/token',
+                                      {id: '@id'},
+                                      {login: { method: 'POST', headers : {'Content-Type': 'application/x-www-form-urlencoded', 'Accept' : '*/*'}}});
         services.users = $resource(endpoint + 'users' + controller_layout,
                                    {id: '@id',
                                     controller: '@controller',
@@ -159,7 +182,8 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                     controller_id1: '@controller_id1',
                                     controller_id2: '@controller_id2',
                                     controller_id3: '@controller_id3'},
-                                   {put: {method: 'PUT', headers: withToken()},
+                                   {get: {method: 'GET', headers: withToken()},
+                                    put: {method: 'PUT', headers: withToken()},
                                     grant: {method: 'PUT', headers: withToken()},
                                     revoke: {method: 'DELETE', headers: withToken()},
                                     create: {method: 'POST', headers: withToken()},
@@ -268,6 +292,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                     {put: {method: 'PUT', headers: withToken()},
                                      get: {method: 'GET', cache: true, headers: withToken()},
                                      create: {method: 'POST', headers: withToken()},
+                                     save: {method: 'POST', headers: withToken()},
                                      delete: {method: 'DELETE', headers: withToken()},
                                      query: {method: 'GET', isArray: true, headers: withToken({'x-full-list': true})},
                                    });
@@ -334,7 +359,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                         }
                                        }}
                                      });
-        services.datasets = $resource(endpoint + 'datasets/:id/:i_fucking_hate_angular',
+        services.datasets = $resource(endpoint + 'datasets/:id/:not_used',
                                       {id: '@id'},
                                       {import: {method: 'POST', headers: withToken()},
                                        get: {method: 'GET', cache: $cacheFactory.get('datasets'), headers: withToken()},
@@ -394,12 +419,15 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
     var services = {}
 
     services.setEndpoint = setEndpoint;
+    services.setEndpoint2 = setEndpoint2;
 
     services.setUp = function() {
       if (Config.backends && Config.backends[0] && Config.backends[0].endpoint) {
           setEndpoint(Config.backends[0].endpoint);
+          setEndpoint2(Config.backends[0].endpoint);
       } else {
           setEndpoint(''); //start pointing to current backend
+          setEndpoint2('');
       };
     }
     services.setUp();
