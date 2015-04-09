@@ -74,9 +74,9 @@ emailAddress=blah@blah.com
 
         ;;
     POST-INSTALL)
-        if [ ! -f /opt/local/fifo-jingles/dist/scripts/config.js ]
+        if [ ! -f /opt/local/fifo-jingles/scripts/config.js ]
         then
-            cp /opt/local/fifo-jingles/dist/scripts/config.js.example /opt/local/fifo-jingles/dist/scripts/config.js
+            cp /opt/local/fifo-jingles/scripts/config.js.example /opt/local/fifo-jingles/scripts/config.js
         fi
         ;;
 esac
