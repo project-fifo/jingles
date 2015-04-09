@@ -32,8 +32,8 @@ angular.module('fifoApp')
         var perms = user.permissions || []
 
         //Add the roles permissions
-        Object.keys(user._roles).forEach(function(k) {
-          perms = perms.concat(user._roles[k].permissions)
+        Object.keys(user.roles).forEach(function(k) {
+          perms = perms.concat(user.roles[k].permissions)
         })
 
         for (var i=0; i<perms.length; i++) {
@@ -56,45 +56,51 @@ angular.module('fifoApp')
       },
 
       login: function (_user, _pass, _otp) {
-        var o = {user: _user, password: _pass};
+        var o = {grant_type: "password", username: _user, password: _pass};
         if (_otp) {
-            o.otp = _otp
+            o.fifo_otp = _otp
         }
-        wiggle.sessions.login(null, o).$promise.then(
 
-          function success(res) {
+        window.localStorage.removeItem("token")
 
+        wiggle.currentsession.login(null, $.param(o)).$promise.then(
+
+          
+          function success(token) {
+            window.localStorage["token"] = token.access_token
+            
             /* Create a user object based on the sessionData, so later we can use loggedUser.mdata_set */
-            user = new wiggle.users(res)
-            user.keys = user.keys || []
-            user.roles = user.roles || []
+            wiggle.sessions.get().$promise.then(
 
-            // console.log('seteando el cookie...', $cookies, res)
-
-            //We dont want cookies, becouse pointing to a different datacenter requires to change the endpoint, cannot save cookies on different endpoints.
-            //But we will use it anyway to read the value and store it on wiggle headers calls. Localstorage would work also...
-            $cookies["x-snarl-token"] = res.session
-
-            $rootScope.$broadcast('auth:login_ok', user, res.session)
-            $location.path('/')
+              function success(res){
+                user = new wiggle.users(res)
+                user.keys = user.keys || []
+                user.roles = user.roles || []
+                $rootScope.$broadcast('auth:login_ok', user, window.localStorage["token"])
+                $location.path('/')
+              },
+              function error(res) {
+                //could not fetch session, pass anyways...
+                $location.path('/')
+                $rootScope.$broadcast('auth:login_ok', user, window.localStorage["token"])
+              }
+            )
           },
 
           function error(res) {
-            $rootScope.$broadcast('auth:login_error', res)
+            $rootScope.$broadcast('auth:login_error', {'status' : 'Could Not Login'})
           }
 
         )
       },
 
       logout: function() {
-        user = null;
+        user = null
 
-        var token = $cookies["x-snarl-token"]
-        if (token) {
-          wiggle.sessions.delete({id: token})
-          delete $cookies["x-snarl-token"]
+        wiggle.sessions.delete(window.localStorage["token"])
+        wiggle.currentsession.delete(window.localStorage["token"])
 
-        }
+        window.localStorage.removeItem("token")
 
         $rootScope.$broadcast('auth:logout')
         $location.path('/login')
@@ -110,13 +116,12 @@ angular.module('fifoApp')
         //Chances are that session.get takes more time that the first change of route, so set a temporary user object
         user = new wiggle.users({status: 'waiting for login validation'})
 
-        var token = $cookies["x-snarl-token"]
-        // console.log('checkIfLogged', token)
+        var token = window.localStorage["token"]
         if (!token)
           return $rootScope.$broadcast('auth:login_needed')
 
         //Check if the current token is valid.
-        wiggle.sessions.get({id: token}).$promise.then(
+        wiggle.sessions.get().$promise.then(
           function ok(res) {
             user = new wiggle.users(res)
             $rootScope.$broadcast('auth:login_ok', user, res.data)
@@ -129,12 +134,13 @@ angular.module('fifoApp')
     $rootScope.$on('$routeChangeSuccess', function(ev, curr, prev) {
       //On first load, prev will be undefined.
 
-      // console.log(prev && prev.$$route.controller, '->', curr.$$route.controller, ev)
       checkIfLogged()
     })
 
     /* Separate the login check from the action taken: listen for auth events and do something */
     $rootScope.$on('auth:login_needed', function() {
+
+      window.localStorage.removeItem("token")
       if ($location != '/login')
         auth.logout()
     })
@@ -158,7 +164,7 @@ angular.module('fifoApp')
           howl.join(hypers)
         })
 
-        howl.connect($cookies["x-snarl-token"])
+        howl.connect(window.localStorage["token"])
       }
 
     })
