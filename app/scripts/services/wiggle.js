@@ -299,6 +299,8 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
         services.vms = $resource(endpoint + 'vms/:id/:controller/:controller_id',
                                  {id: '@id', controller: '@controller', controller_id: '@controller_id'},
                                  {put: {method: 'PUT', headers: withToken()},
+                                  save: {method: 'POST', headers: withToken()},
+                                  delete: {method: 'DELETE', headers: withToken()},
                                   get: {method: 'GET', headers: withToken(), interceptor: {
                                     response: function(res) {
                                       return additionalVmData(res.resource)
