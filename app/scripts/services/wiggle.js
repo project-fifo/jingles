@@ -67,7 +67,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
         */
         ['hypervisors', 'vms'].forEach(function(resource) {
           services[resource].list = function(cb, error) {
-              return $http.get(endpoint + resource, {headers: {'Authorization': 'Bearer '  + window.token} })
+              return $http.get(endpoint + resource, {headers: {'Authorization': 'Bearer '  + window.localStorage["token"]} })
                   .success(cb)
                   .error(function(data) {
                       error && error(data);
@@ -162,7 +162,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
 
       function withToken(h) {
         h = h || {}
-        var AuthToken = {'Authorization': 'Bearer ' + window.token} 
+        var AuthToken = {'Authorization': 'Bearer ' + window.localStorage["token"]} 
         var res =  angular.extend(AuthToken, h)
         return res
       }

@@ -61,15 +61,14 @@ angular.module('fifoApp')
             o.fifo_otp = _otp
         }
 
-        window.token = null
-
+        window.localStorage.removeItem("token")
 
         wiggle.currentsession.login(null, $.param(o)).$promise.then(
 
           
           function success(token) {
-            window.token = token.access_token
-
+            window.localStorage["token"] = token.access_token
+            
             /* Create a user object based on the sessionData, so later we can use loggedUser.mdata_set */
             wiggle.sessions.get().$promise.then(
 
@@ -77,13 +76,13 @@ angular.module('fifoApp')
                 user = new wiggle.users(res)
                 user.keys = user.keys || []
                 user.roles = user.roles || []
-                $rootScope.$broadcast('auth:login_ok', user, window.token)
+                $rootScope.$broadcast('auth:login_ok', user, window.localStorage["token"])
                 $location.path('/')
               },
               function error(res) {
                 //could not fetch session, pass anyways...
                 $location.path('/')
-                $rootScope.$broadcast('auth:login_ok', user, window.token)
+                $rootScope.$broadcast('auth:login_ok', user, window.localStorage["token"])
               }
             )
           },
@@ -98,7 +97,10 @@ angular.module('fifoApp')
       logout: function() {
         user = null
 
-        window.token = null
+        wiggle.sessions.delete(window.localStorage["token"])
+        wiggle.currentsession.delete(window.localStorage["token"])
+
+        window.localStorage.removeItem("token")
 
         $rootScope.$broadcast('auth:logout')
         $location.path('/login')
@@ -114,7 +116,7 @@ angular.module('fifoApp')
         //Chances are that session.get takes more time that the first change of route, so set a temporary user object
         user = new wiggle.users({status: 'waiting for login validation'})
 
-        var token = window.token
+        var token = window.localStorage["token"]
         if (!token)
           return $rootScope.$broadcast('auth:login_needed')
 
@@ -137,7 +139,8 @@ angular.module('fifoApp')
 
     /* Separate the login check from the action taken: listen for auth events and do something */
     $rootScope.$on('auth:login_needed', function() {
-      window.token=""
+
+      window.localStorage.removeItem("token")
       if ($location != '/login')
         auth.logout()
     })
@@ -161,7 +164,7 @@ angular.module('fifoApp')
           howl.join(hypers)
         })
 
-        howl.connect(window.token)
+        howl.connect(window.localStorage["token"])
       }
 
     })
