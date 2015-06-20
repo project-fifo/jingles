@@ -103,8 +103,8 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
       if (vm.owner)
         vm._owner = services.orgs.get({id: vm.owner})
 
-      if (vm.grouping)
-        vm._grouping = services.groupings.get({id: vm.grouping})
+      if (vm.groupings)
+        vm._grouping = services.groupings.get({id: vm.groupings[0]})
 
       if (vm.hypervisor && vm.hypervisor != 'pooled')
         vm._hypervisor = services.hypervisors.get({id: vm.hypervisor})
@@ -280,7 +280,7 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                     }
                                   }},
                                   query: {method: 'GET', isArray: true, headers: withToken({'x-full-list': true})},
-                                  queryFull: {method: 'GET', isArray: true, headers: withToken({'x-full-list': "true", 'x-full-list-fields': 'uuid,datset,package,config,hypervisor,owner,metadata,state,grouping'}), interceptor: {
+                                  queryFull: {method: 'GET', isArray: true, headers: withToken({'x-full-list': "true", 'x-full-list-fields': 'uuid,datset,package,config,hypervisor,owner,metadata,state,groupings'}), interceptor: {
                                     response: function(res) {
                                       res.resource.forEach(additionalVmData)
                                       res.resource.hash = hashFromArray(res.resource)
