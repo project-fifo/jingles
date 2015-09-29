@@ -178,9 +178,10 @@ angular.module('fifoApp').factory('wiggle', function ($resource, $http, $cacheFa
                                             //If != 200, at least put the uuid and a name to better manage it on the UI.
                                             //TODO: maybe there is a way to make this more generic?
                                             _g.$promise.catch(function(err) {
-                                              _g.name = '?'
-                                              _g.uuid = g
-                                              _g.deleted = true
+                                              _g.name = '?';
+                                              _g.uuid = g;
+                                              _g.deleted = true;
+                                              _g.permissions = [];
                                             })
 
                                             return _g

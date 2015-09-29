@@ -33,7 +33,8 @@ angular.module('fifoApp')
 
         //Add the roles permissions
         Object.keys(user._roles).forEach(function(k) {
-          perms = perms.concat(user._roles[k].permissions)
+          var r = user._roles[k] || {};
+          perms = perms.concat(r.permissions || [])
         })
 
         for (var i=0; i<perms.length; i++) {
